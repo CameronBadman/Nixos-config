@@ -4,8 +4,8 @@
     wireless = {
       enable = true;
       networks = {
-        "Network" = {
-          psk = "psk";
+        "" = {
+          psk = "";
         };
       };
     };

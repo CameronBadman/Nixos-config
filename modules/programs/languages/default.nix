@@ -14,9 +14,9 @@ in
     poetry
     go
     luajit
+    terraform
     
     # C/C++
-    clang
     clang-tools
     
     # Rust

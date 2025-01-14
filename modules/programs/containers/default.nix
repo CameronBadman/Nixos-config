@@ -11,6 +11,7 @@ in
     docker-compose
     kubernetes-helm
     kubectl
+    minikube
   ];
 }
 

@@ -5,6 +5,6 @@
     ./waybar.nix
     ./windowrules.nix
     ./hypr-keybinds.nix
-
+    ./workspaces.nix
     ];
 }
