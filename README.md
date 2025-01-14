@@ -1,24 +1,65 @@
-# Nixos-config
+# NixOS Configuration
 
+This repository contains my personal NixOS system configuration with a modular structure for easy management and replication.
 
-this is my nixos configuration
+## Initial Setup
 
-this is the general documentation for it
+1. Enable wpa_supplicant for WiFi:
+```bash
+sudo systemctl enable wpa_supplicant
+```
 
-you will need to activate wpa_supplicant and run the commmand
+2. Configure your WiFi credentials:
+   - Navigate to `modules/core/networking`
+   - Add your SSID and PSK in the appropriate configuration section
 
-____ to run it correctly on first install, I also recomend you put your wifi ssid and psk in the module/core/networking
+## Directory Structure
+```
+.
+├── programs/          # Package configurations
+│   ├── editors/      # Text editors (neovim, etc.)
+│   ├── terminal/     # Terminal emulators and tools
+│   ├── containers/   # Docker, kubernetes
+│   ├── languages/    # Programming languages and LSP
+│   └── media/        # Browsers and media tools
+├── desktop/          # Desktop environment (Hyprland)
+└── modules/          # Core system modules
+    └── core/         # Core system configurations
+```
 
-if you want to isntall a package go to programs/ 
+## Package Management
 
-there is different directoies in this folder, if you put it in the list of programs it will download the default config, if you create a file like neovim, it will install still and run
+### Adding New Packages
+- Navigate to the appropriate directory in `programs/`
+- Add package to the relevant `default.nix` list for default configuration
+- For custom configurations, create a new .nix file (e.g., `neovim.nix`)
 
+### Updating GitHub-sourced Packages
+1. Remove the SHA hash value in the configuration
+2. Replace with empty quotes `""`
+3. Run `nixos-rebuild`
+4. The build will fail and provide the correct hash
+5. Replace the empty quotes with the new hash
+6. Run `nixos-rebuild` again
 
-hyprland can be found in desktop
+## Desktop Environment
 
+Hyprland configuration can be found in the `desktop` directory. Customize window management, keybindings, and appearance settings here.
 
-to get the latest version of any of teh integrated software, you must remove the hash value and leave "" the sha hash of that specifc githubclone, and then run the nixos-rebuild, the build will fail and give you ahash value to replace the "" with
+## Additional Notes
 
+- Each directory in `programs/` supports both default package installation and custom configurations
+- Custom configurations are automatically imported from .nix files in their respective directories
+- The modular structure allows for easy addition and removal of components
 
+## Usage
 
+To rebuild your system after making changes:
+```bash
+sudo nixos-rebuild switch
+```
 
+For development/testing:
+```bash
+sudo nixos-rebuild test
+```
