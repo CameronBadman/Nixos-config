@@ -9,6 +9,27 @@
     };
   };
 
+  # Add required system packages
+  environment.systemPackages = with pkgs; [
+    # Language Servers
+    gopls
+    rust-analyzer
+    nodePackages.typescript-language-server
+    lua-language-server
+    nil # Nix LSP
+    
+    # Required dependencies
+    python311Packages.pip
+    luarocks
+    
+    # Development tools
+    ripgrep
+    fd
+    
+    # For clipboard support
+    wl-clipboard
+  ];
+
   programs.neovim = {
     enable = true;
     defaultEditor = true;
@@ -22,10 +43,15 @@
         vim.env.XDG_DATA_HOME = '/var/lib/nvim/data'
         vim.env.XDG_STATE_HOME = '/var/lib/nvim/state'
         vim.env.XDG_CACHE_HOME = '/var/lib/nvim/cache'
-
-        -- Set up lazy.nvim paths before loading anything
+        
+        -- Create config directory if it doesn't exist
+        local config_dir = '/var/lib/nvim/config/nvim'
+        if vim.fn.isdirectory(config_dir) == 0 then
+          vim.fn.mkdir(config_dir, 'p')
+        end
+        
+        -- Set up lazy.nvim paths
         vim.g.lazy_path = '/var/lib/nvim/lazy'
-        -- Configure lazy to use our writable directory
         vim.g.lazy_config = {
           root = vim.g.lazy_path,
           lockfile = vim.g.lazy_path .. '/lazy-lock.json',
@@ -35,6 +61,15 @@
           },
         }
 
+        -- Disable luarocks warning
+        vim.g.lazy_rocks = {
+          enabled = false
+        }
+
+        -- Set up Mason and LSP paths
+        vim.env.MASON_INSTALL_DIR = '/var/lib/nvim/mason'
+        vim.env.LSP_SERVERS_DIR = '/var/lib/nvim/lsp'
+        
         -- Add config directories to runtimepath
         vim.opt.runtimepath:prepend("/etc/xdg/nvim")
         vim.opt.runtimepath:prepend(vim.g.lazy_path)
@@ -64,36 +99,26 @@
       '';
       packages.myVimPackage = with pkgs.vimPlugins; {
         start = [ 
-          lazy-nvim
-          nvim-treesitter
-          plenary-nvim
-          telescope-nvim
-          nvim-lspconfig
-          nvim-jdtls
-          rust-tools-nvim
-          typescript-tools-nvim
-          nvim-cmp
-          cmp-nvim-lsp
-          cmp-buffer
-          cmp-path
-          which-key-nvim
-          vim-illuminate
-          nvim-web-devicons
-          mason-nvim
-          mason-lspconfig-nvim
+          # ... your existing plugins ...
         ];
       };
     };
   };
 
+  # Directory structure with additional directories
   systemd.tmpfiles.rules = [
+    # Base directories
     "d /var/lib/nvim 0755 root root -"
     "d /var/lib/nvim/config 0750 cameron cameron -"
+    "d /var/lib/nvim/config/nvim 0750 cameron cameron -" # Add this line
     "d /var/lib/nvim/data 0750 cameron cameron -"
     "d /var/lib/nvim/state 0750 cameron cameron -"
     "d /var/lib/nvim/cache 0750 cameron cameron -"
     "d /var/lib/nvim/lazy 0750 cameron cameron -"
+    "d /var/lib/nvim/lsp 0750 cameron cameron -"
+    "d /var/lib/nvim/mason 0750 cameron cameron -"
+    "d /var/lib/nvim/undo 0750 cameron cameron -"
+    "d /var/lib/nvim/swap 0750 cameron cameron -"
+    "d /var/lib/nvim/backup 0750 cameron cameron -"
   ];
 }
-
-

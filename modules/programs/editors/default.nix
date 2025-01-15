@@ -7,6 +7,7 @@ in
   imports = utils.getImports ./.;
 
   environment.systemPackages = with pkgs; [
+   netcat     
   ];
 }
 

@@ -1,9 +1,5 @@
 { config, lib, pkgs, ... }:
 {
-  imports = [
-    <home-manager/nixos>
-  ];
-  
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
@@ -12,6 +8,19 @@
       home.stateVersion = "23.11";
       fonts.fontconfig.enable = false;
       xdg.enable = false;
+
+      # SSH configuration
+      programs.ssh = {
+        enable = true;
+        matchBlocks = {
+          "github.com" = {
+            identityFile = "~/.ssh/github_key";
+            extraOptions = {
+              AddKeysToAgent = "yes";
+            };
+          };
+        };
+      };
     };
   };
   
@@ -34,4 +43,3 @@
     Defaults env_keep += "NEOVIM_STATE_DIR"
   '';
 }
-

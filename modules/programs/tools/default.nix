@@ -21,6 +21,11 @@ in
     gnumake
     cmake
     ninja
+    texstudio
+    texlive.combined.scheme-full
+    sops
+    age
+    teams
   ];
 }
 
