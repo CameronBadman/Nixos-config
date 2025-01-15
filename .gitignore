@@ -1,0 +1,4 @@
+secrets/*.yaml
+!secrets/*.enc.yaml
+.direnv
+result
