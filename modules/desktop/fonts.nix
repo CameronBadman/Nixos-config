@@ -4,11 +4,9 @@
     fontDir.enable = true;
     enableDefaultPackages = true;
     packages = with pkgs; [
-      (nerdfonts.override {
-        fonts = [ "JetBrainsMono" ];
-      })
+      nerd-fonts.jetbrains-mono  # Note the change in package name
     ];
-
+        
     fontconfig = {
       enable = true;
       defaultFonts = {

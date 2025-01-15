@@ -25,7 +25,6 @@ in
     texlive.combined.scheme-full
     sops
     age
-    teams
   ];
 }
 
