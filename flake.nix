@@ -18,15 +18,9 @@
         system = "x86_64-linux";
         modules = [
           ./configuration.nix
+          ./modules/secrets.nix
           agenix.nixosModules.default
           home-manager.nixosModules.home-manager
-          ({ config, lib, ... }: {
-            age.secrets.test = {
-              file = ./secrets/test.age;
-              owner = "cameron";
-              mode = "400";
-            };
-          })
         ];
         specialArgs = { inherit inputs self; };
       };
