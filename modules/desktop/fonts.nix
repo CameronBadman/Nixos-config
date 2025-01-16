@@ -6,8 +6,7 @@
       (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     ];
 
-    # Move fontconfig inside the fonts configuration
-    fontconfig = {
+        fontconfig = {
       enable = true;
       defaultFonts = {
         monospace = [ "JetBrainsMono Nerd Font Mono" ];
