@@ -6,8 +6,8 @@
       # Specify all known networks
       networks = {
         # Home Network
-        "" = {
-          psk = "";
+        "Network1" = {
+          psk = "NetworkPsk";
         };
 
         # Work Network

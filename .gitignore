@@ -1,7 +1,8 @@
-# Ignore all .nix files in the secrets directory
-modules/secrets/*.nix
+
+# Ignore the actual networking configuration
+modules/core/networking.nix
+
 
 # Keep the example file
-!modules/secrets/default.nix.example
-
+!networking.nix.example
 
