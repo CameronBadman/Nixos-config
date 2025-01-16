@@ -1,13 +1,12 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
-let
-  utils = import ../utils.nix { inherit lib; };
-in
 {
-  imports = utils.getImports ./.;
-
-  environment.systemPackages = with pkgs; [
-   netcat     
+  imports = [
+    ./terminal
+    ./nvim
+    ./containers
+    ./languages
   ];
 }
+
 
