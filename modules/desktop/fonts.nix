@@ -1,12 +1,13 @@
-{ config, lib, pkgs, ... }: {
+{ config, lib, pkgs, ... }:
+{
   fonts = {
     fontDir.enable = true;
     enableDefaultPackages = true;
     packages = with pkgs; [
-      (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+      nerd-fonts.jetbrains-mono  
     ];
-
-        fontconfig = {
+        
+    fontconfig = {
       enable = true;
       defaultFonts = {
         monospace = [ "JetBrainsMono Nerd Font Mono" ];
@@ -31,18 +32,21 @@
               <const>hintslight</const>
             </edit>
           </match>
+
           <!-- Enable antialiasing -->
           <match target="pattern">
             <edit name="antialias" mode="assign">
               <bool>true</bool>
             </edit>
           </match>
+
           <!-- Set LCD filter -->
           <match target="pattern">
             <edit name="lcdfilter" mode="assign">
               <const>lcddefault</const>
             </edit>
           </match>
+
           <!-- Disable bitmap fonts -->
           <selectfont>
             <rejectfont>

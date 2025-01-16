@@ -1,9 +1,8 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 {
   imports = [
-    <home-manager/nixos>
     ./hardware-configuration.nix
-    ./modules 
+    ./modules
   ];
   
   nix.settings.experimental-features = [ "nix-command" "flakes" ];

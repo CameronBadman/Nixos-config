@@ -23,6 +23,7 @@ in
     ninja
     texstudio
     texlive.combined.scheme-full
+    age
   ];
 }
 
