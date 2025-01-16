@@ -1,6 +1,6 @@
 
 # Ignore the actual networking configuration
-modules/core/networking.nix
+private/networking.nix
 
 
 # Keep the example file

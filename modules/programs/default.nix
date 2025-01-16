@@ -4,7 +4,7 @@
   imports = [
     ./tools
     ./media
-    ./development/
+    ./development
   ];
 }
 

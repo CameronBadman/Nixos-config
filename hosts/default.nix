@@ -1,9 +1,7 @@
-{config, lib, pkgs}
-
-
-# these files are for specific hardware requirementes needed for specific setups 
+{ config, lib, pkgs, ... }:
 {
-import = [
-    ./nvidia/
-];
+  imports = [
+   ./nvidia
+  ];
 }
+

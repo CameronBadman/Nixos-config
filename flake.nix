@@ -7,19 +7,16 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # Private config is now inside the repo
-    private.url = "path:./private";
   };
 
-  outputs = { self, nixpkgs, home-manager, private, ... }@inputs: {
+  outputs = { self, nixpkgs, home-manager, ... }@inputs: {
     nixosConfigurations = {
       nixos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           ./configuration.nix
+          ./private/networking.nix  # Direct import instead of flake input
           home-manager.nixosModules.home-manager
-          private.nixosModules.networking
         ];
         specialArgs = { inherit inputs self; };
       };

@@ -3,6 +3,8 @@
   imports = [
     ./hardware-configuration.nix
     ./modules
+    ./hosts
+    ./users
   ];
   
   nix.settings.experimental-features = [ "nix-command" "flakes" ];

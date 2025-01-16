@@ -5,6 +5,5 @@
     ./desktop
     ./hardware
     ./programs
-    ./users
   ];
 }

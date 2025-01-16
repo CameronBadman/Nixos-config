@@ -3,7 +3,7 @@
 {
   imports = [
     ./terminal
-    ./nvim
+    ./nvim/neovim.nix
     ./containers
     ./languages
   ];
