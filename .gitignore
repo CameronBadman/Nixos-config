@@ -1,8 +1,4 @@
 
 # Ignore the actual networking configuration
-private/networking.nix
-
-
-# Keep the example file
-!networking.nix.example
+/private/networking.nix
 
