@@ -1,7 +1,15 @@
+{ config, lib, pkgs, ... }:
 {
-  networking.wireless.networks = {
-    "BadNetMer" = {
-      psk = "DinoCoco123";
+  networking = {
+    wireless = {
+      enable = true;
+      
+      networks = {
+        "" = {
+          psk = "";
+        };
+      };
     };
   };
-}
+  }
+

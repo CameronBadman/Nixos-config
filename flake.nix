@@ -1,25 +1,38 @@
 {
+  description = "nixos config";
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    
-    # Add agenix
-    agenix.url = "github:ryantm/agenix";
-  };
-
-  outputs = { self, nixpkgs, home-manager, agenix, ... }@inputs: {
-    nixosConfigurations = {
-      nixos = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./configuration.nix
-          home-manager.nixosModules.home-manager
-          agenix.nixosModules.default  # Add this line
-        ];
-        specialArgs = { inherit inputs self; };
-      };
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
+
+  outputs = { self, nixpkgs, home-manager, sops-nix, ... }@inputs:
+    let
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+    in
+    {
+      nixosConfigurations = {
+        nixos = nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = { inherit inputs self; };
+          modules = [
+            ./configuration.nix
+            ./hosts/default.nix
+            ./modules/default.nix
+            home-manager.nixosModules.home-manager  
+            ./users/default.nix                     
+            sops-nix.nixosModules.sops
+          ];
+        };
+      };
+    };
 }
 

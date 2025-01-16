@@ -1,7 +1,9 @@
 { config, lib, pkgs, ... }:
 {
   imports = [ 
-    ./boot.nix 
+    ./boot.nix
+    ./networking.nix
+    ./networking.nix
   ];
 }
 

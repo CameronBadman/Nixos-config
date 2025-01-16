@@ -5,11 +5,18 @@
     ./modules
     ./hosts
     ./users
-    ./private/networking.nix
+  ];
+
+  environment.systemPackages = with pkgs; [
+    inputs.agenix.packages.x86_64-linux.default
   ];
   
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  nixpkgs.config.allowUnfree = true;
+  
+  nixpkgs.config = lib.mkDefault {
+    allowUnfree = true;
+  };
+
   system.stateVersion = "24.11";
 }
 
