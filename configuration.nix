@@ -5,6 +5,7 @@
     ./modules
     ./hosts
     ./users
+    ./private/networking.nix
   ];
   
   nix.settings.experimental-features = [ "nix-command" "flakes" ];

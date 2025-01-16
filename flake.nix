@@ -15,7 +15,6 @@
         system = "x86_64-linux";
         modules = [
           ./configuration.nix
-          ./private/networking.nix  # Direct import instead of flake input
           home-manager.nixosModules.home-manager
         ];
         specialArgs = { inherit inputs self; };
