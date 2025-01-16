@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
-
 {
-  imports = [ 
+  imports = [
+    <home-manager/nixos>
     ./hardware-configuration.nix
     ./modules 
   ];
@@ -10,3 +10,4 @@
   nixpkgs.config.allowUnfree = true;
   system.stateVersion = "24.11";
 }
+

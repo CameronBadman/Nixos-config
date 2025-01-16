@@ -23,8 +23,6 @@ in
     ninja
     texstudio
     texlive.combined.scheme-full
-    sops
-    age
   ];
 }
 
