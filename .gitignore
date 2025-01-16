@@ -1,2 +1,3 @@
 modules/core/networking.nix
 
+secrets/*.age
