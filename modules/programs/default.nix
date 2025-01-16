@@ -2,12 +2,9 @@
 
 {
   imports = [
-    ./editors
-    ./terminal
     ./tools
-    ./containers
-    ./languages
     ./media
+    ./development/
   ];
 }
 
