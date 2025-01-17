@@ -25,10 +25,10 @@
           specialArgs = { inherit inputs self; };
           modules = [
             ./configuration.nix
-            ./hosts/default.nix
-            ./modules/default.nix
+            ./hosts
+            ./modules
             home-manager.nixosModules.home-manager  
-            ./users/default.nix                     
+            ./users                     
             sops-nix.nixosModules.sops
           ];
         };
