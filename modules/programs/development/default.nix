@@ -1,12 +1,9 @@
-{ config, pkgs, ... }:
-
+{ config, pkgs, inputs, ... }:
 {
   imports = [
     ./terminal
-    ./nvim/neovim.nix
+    (import ./nvim/neovim.nix { inherit config pkgs inputs; })
     ./containers
     ./languages
   ];
 }
-
-

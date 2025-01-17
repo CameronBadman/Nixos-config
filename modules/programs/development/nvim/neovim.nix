@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 
 {
   home-manager.users.cameron = {
@@ -19,6 +19,7 @@
         ripgrep
         fd
         wl-clipboard
+	kubectl
       ];
 
       plugins = with pkgs.vimPlugins; [
@@ -53,7 +54,13 @@
         neo-tree-nvim
         lualine-nvim
 
-
+	{
+	plugin = pkgs.vimUtils.buildVimPlugin {
+	name = "kubectl-nvim";
+	src = inputs.kubectl-nvim;
+	    };
+	type = "lua";  # Add this line
+	  }
 
 	catppuccin-nvim
         
@@ -195,25 +202,6 @@
           },
         })
 
-        -- Telescope setup
-        local telescope = require('telescope')
-        telescope.setup()
-        
-        local telescope_builtin = require('telescope.builtin')
-        vim.keymap.set('n', '<leader>ff', telescope_builtin.find_files, { desc = 'Find files' })
-        vim.keymap.set('n', '<leader>fg', telescope_builtin.live_grep, { desc = 'Live grep' })
-        vim.keymap.set('n', '<leader>fb', telescope_builtin.buffers, { desc = 'Find buffers' })
-        vim.keymap.set('n', '<leader>fh', telescope_builtin.help_tags, { desc = 'Help tags' })
-	
-	-- Lualine setup
-        require('lualine').setup({
-          options = {
-            theme = 'catpuccin',
-            icons_enabled = true,
-          },
-        })
-
-        -- Git signs setup
         require('gitsigns').setup()
 	require("config")
       '';
@@ -228,6 +216,7 @@ xdg.configFile = {
       "nvim/lua/config/lualine.lua".source = ./config/lualine.lua;
       "nvim/lua/config/telescope.lua".source = ./config/telescope.lua;
       "nvim/lua/config/git.lua".source = ./config/git.lua;
+      "nvim/lua/config/kubectl.lua".source = ./config/kubectl.lua;
     };
   };
 }

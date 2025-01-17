@@ -20,6 +20,22 @@
         "type": "github"
       }
     },
+    "kubectl-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1736413897,
+        "narHash": "sha256-zOE0V6sSUBmUiW0pWVkmRIfplcMsfaL45/kKOMZdO/o=",
+        "owner": "Ramilito",
+        "repo": "kubectl.nvim",
+        "rev": "159cbdcd06a9205cf08c37606b229f5d916247b1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Ramilito",
+        "repo": "kubectl.nvim",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1736883708,
@@ -39,6 +55,7 @@
     "root": {
       "inputs": {
         "home-manager": "home-manager",
+        "kubectl-nvim": "kubectl-nvim",
         "nixpkgs": "nixpkgs",
         "sops-nix": "sops-nix"
       }
