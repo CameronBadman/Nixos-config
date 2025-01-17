@@ -22,11 +22,13 @@
       ];
 
       plugins = with pkgs.vimPlugins; [
-        # Core plugins
+        # Package management
         lazy-nvim
+
+        # Core plugins
         plenary-nvim
         nvim-web-devicons
-
+        
         # LSP Support
         nvim-lspconfig
         mason-nvim
@@ -58,19 +60,149 @@
       ];
 
       extraLuaConfig = ''
-        -- Basic settings
-        vim.opt.number = true
-        vim.opt.relativenumber = true
-        vim.opt.clipboard = "unnamedplus"
-        
-        -- Leader key
+        -- Basic vim options
         vim.g.mapleader = " "
         vim.g.maplocalleader = " "
 
+        -- Options
+        vim.opt.number = true
+        vim.opt.relativenumber = true
+        vim.opt.mouse = 'a'
+        vim.opt.showmode = false
+        vim.opt.clipboard = 'unnamedplus'
+        vim.opt.breakindent = true
+        vim.opt.undofile = true
+        vim.opt.ignorecase = true
+        vim.opt.smartcase = true
+        vim.opt.signcolumn = 'yes'
+        vim.opt.updatetime = 250
+        vim.opt.timeoutlen = 300
+        vim.opt.splitright = true
+        vim.opt.splitbelow = true
+        vim.opt.list = true
+        vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+        vim.opt.inccommand = 'split'
+        vim.opt.cursorline = true
+        vim.opt.scrolloff = 10
+        vim.opt.hlsearch = false
+
+        -- Basic Keymaps
+        vim.keymap.set('n', '<leader>h', ':nohlsearch<CR>')
+        vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
+        vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
+        vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
+        vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+
         -- Theme setup
         vim.cmd.colorscheme("cyberdream")
+
+        -- LSP Configuration
+        local lspconfig = require('lspconfig')
+        local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+        -- LSP servers setup
+        local servers = {
+          gopls = {},
+          rust_analyzer = {},
+          tsserver = {},
+          lua_ls = {
+            settings = {
+              Lua = {
+                diagnostics = { globals = {'vim'} }
+              }
+            }
+          },
+          nil_ls = {},
+        }
+
+        for server, config in pairs(servers) do
+          config.capabilities = capabilities
+          lspconfig[server].setup(config)
+        end
+
+        -- LSP Keymaps
+        vim.api.nvim_create_autocmd('LspAttach', {
+          group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+          callback = function(ev)
+            local opts = { buffer = ev.buf }
+            vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+            vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+            vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+            vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+            vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+            vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, opts)
+            vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, opts)
+            vim.keymap.set('n', '<leader>wl', function()
+              print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+            end, opts)
+            vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts)
+            vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+            vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts)
+            vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+          end,
+        })
+
+        -- Completion setup
+        local cmp = require('cmp')
+        local luasnip = require('luasnip')
+
+        cmp.setup({
+          snippet = {
+            expand = function(args)
+              luasnip.lsp_expand(args.body)
+            end,
+          },
+          mapping = cmp.mapping.preset.insert({
+            ['<C-Space>'] = cmp.mapping.complete(),
+            ['<CR>'] = cmp.mapping.confirm({ select = true }),
+            ['<C-n>'] = cmp.mapping.select_next_item(),
+            ['<C-p>'] = cmp.mapping.select_prev_item(),
+          }),
+          sources = {
+            { name = 'nvim_lsp' },
+            { name = 'luasnip' },
+            { name = 'buffer' },
+            { name = 'path' },
+          },
+        })
+
+        -- Telescope setup
+        local telescope = require('telescope')
+        telescope.setup()
+        
+        local telescope_builtin = require('telescope.builtin')
+        vim.keymap.set('n', '<leader>ff', telescope_builtin.find_files, { desc = 'Find files' })
+        vim.keymap.set('n', '<leader>fg', telescope_builtin.live_grep, { desc = 'Live grep' })
+        vim.keymap.set('n', '<leader>fb', telescope_builtin.buffers, { desc = 'Find buffers' })
+        vim.keymap.set('n', '<leader>fh', telescope_builtin.help_tags, { desc = 'Help tags' })
+
+        -- Neo-tree setup
+        require('neo-tree').setup({
+          filesystem = {
+            follow_current_file = true,
+            hijack_netrw_behavior = "open_current",
+          },
+        })
+        vim.keymap.set('n', '<leader>e', ':Neotree toggle<CR>', { desc = 'Toggle Neo-tree' })
+
+        -- Lualine setup
+        require('lualine').setup({
+          options = {
+            theme = 'cyberdream',
+            icons_enabled = true,
+          },
+        })
+
+        -- Git signs setup
+        require('gitsigns').setup()
       '';
+    };
+
+
+
+xdg.configFile = {
+      "nvim/lua/config/init.lua".source = ./config/init.lua;
+      "nvim/lua/config/treesitter.lua".source = ./config/treesitter.lua;
     };
   };
 }
-
