@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   home-manager.users.cameron = {
@@ -51,14 +51,33 @@
         telescope-nvim
         neo-tree-nvim
         lualine-nvim
+
+	catppuccin-nvim
         
         # Syntax and languages
-        nvim-treesitter.withAllGrammars
+        (nvim-treesitter.withPlugins (plugins: with plugins; [
+	    lua
+	    python
+	    typescript
+	    javascript
+	    go
+	    rust
+	    c
+	    cpp
+	    java
+	    json
+	    yaml
+	    toml
+	    html
+	    css
+	    markdown
+	    markdown_inline
+	    vim
+	    vimdoc
+	    query
+	  ]))
+	];
         
-        # Theme
-        cyberdream-nvim
-      ];
-
       extraLuaConfig = ''
         -- Basic vim options
         vim.g.mapleader = " "
@@ -90,11 +109,10 @@
         vim.keymap.set('n', '<leader>h', ':nohlsearch<CR>')
         vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
         vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
-        vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
         vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
         -- Theme setup
-        vim.cmd.colorscheme("cyberdream")
+        vim.cmd.colorscheme("catppuccin")
 
         -- LSP Configuration
         local lspconfig = require('lspconfig')
@@ -104,7 +122,7 @@
         local servers = {
           gopls = {},
           rust_analyzer = {},
-          tsserver = {},
+          ts_ls = {},  -- Changed from tsserver
           lua_ls = {
             settings = {
               Lua = {
@@ -115,10 +133,18 @@
           nil_ls = {},
         }
 
+        -- Simple LSP setup for now, we'll move this to its own file later
         for server, config in pairs(servers) do
-          config.capabilities = capabilities
-          lspconfig[server].setup(config)
+          if server == "ts_ls" then  -- Special case for typescript
+            config.capabilities = capabilities
+            config.root_dir = lspconfig.util.root_pattern("package.json")
+            lspconfig[server].setup(config)
+          else
+            config.capabilities = capabilities
+            lspconfig[server].setup(config)
+          end
         end
+
 
         -- LSP Keymaps
         vim.api.nvim_create_autocmd('LspAttach', {
@@ -175,26 +201,18 @@
         vim.keymap.set('n', '<leader>fg', telescope_builtin.live_grep, { desc = 'Live grep' })
         vim.keymap.set('n', '<leader>fb', telescope_builtin.buffers, { desc = 'Find buffers' })
         vim.keymap.set('n', '<leader>fh', telescope_builtin.help_tags, { desc = 'Help tags' })
-
-        -- Neo-tree setup
-        require('neo-tree').setup({
-          filesystem = {
-            follow_current_file = true,
-            hijack_netrw_behavior = "open_current",
-          },
-        })
-        vim.keymap.set('n', '<leader>e', ':Neotree toggle<CR>', { desc = 'Toggle Neo-tree' })
-
-        -- Lualine setup
+	
+	-- Lualine setup
         require('lualine').setup({
           options = {
-            theme = 'cyberdream',
+            theme = 'catpuccin',
             icons_enabled = true,
           },
         })
 
         -- Git signs setup
         require('gitsigns').setup()
+	require("config")
       '';
     };
 
@@ -203,6 +221,8 @@
 xdg.configFile = {
       "nvim/lua/config/init.lua".source = ./config/init.lua;
       "nvim/lua/config/treesitter.lua".source = ./config/treesitter.lua;
+      "nvim/lua/config/neo-tree.lua".source = ./config/neo-tree.lua;
+      "nvim/lua/config/lualine.lua".source = ./config/lualine.lua;
     };
   };
 }
