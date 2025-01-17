@@ -12,15 +12,6 @@
     mode = "0400";
   };
 
-  # Keep logging for testing
-  system.activationScripts.testSecrets = ''
-    echo "Testing SOPS secrets:"
-    echo "SSID file contents:"
-    cat ${config.sops.secrets."wireless/home/WIFI_SSID".path} || echo "Failed to read SSID"
-    echo "PSK file contents:"
-    cat ${config.sops.secrets."wireless/home/WIFI_PSK".path} || echo "Failed to read PSK"
-  '';
-
   networking = {
     wireless.enable = false;  # Disable wpa_supplicant
     networkmanager = {
