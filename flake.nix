@@ -1,5 +1,6 @@
 {
   description = "nixos config";
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager = {
@@ -10,13 +11,9 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Add nvf input
-    nvf = {
-      url = "github:notashelf/nvf";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
-  outputs = { self, nixpkgs, home-manager, sops-nix, nvf, ... }@inputs:
+
+  outputs = { self, nixpkgs, home-manager, sops-nix, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -30,11 +27,9 @@
             ./configuration.nix
             ./hosts
             ./modules
-            home-manager.nixosModules.home-manager
-            ./users
+            home-manager.nixosModules.home-manager  
+            ./users                     
             sops-nix.nixosModules.sops
-            # Add nvf module
-            nvf.nixosModules.default
           ];
         };
       };
