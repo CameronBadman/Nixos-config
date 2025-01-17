@@ -227,6 +227,7 @@ xdg.configFile = {
       "nvim/lua/config/neo-tree.lua".source = ./config/neo-tree.lua;
       "nvim/lua/config/lualine.lua".source = ./config/lualine.lua;
       "nvim/lua/config/telescope.lua".source = ./config/telescope.lua;
+      "nvim/lua/config/git.lua".source = ./config/git.lua;
     };
   };
 }
