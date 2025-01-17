@@ -8,6 +8,7 @@ local function load_config()
     require("config.treesitter").setup()
     require("config.neo-tree").setup()
     require("config.lualine").setup()
+    require("config.telescope").setup()
     -- Future modules will be loaded here as we add them
     -- require("config.lsp").setup()
     -- require("config.telescope").setup()

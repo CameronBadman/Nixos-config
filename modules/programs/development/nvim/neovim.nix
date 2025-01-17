@@ -49,8 +49,11 @@
 
         # File navigation and UI
         telescope-nvim
+	telescope-fzf-native-nvim
         neo-tree-nvim
         lualine-nvim
+
+
 
 	catppuccin-nvim
         
@@ -223,6 +226,7 @@ xdg.configFile = {
       "nvim/lua/config/treesitter.lua".source = ./config/treesitter.lua;
       "nvim/lua/config/neo-tree.lua".source = ./config/neo-tree.lua;
       "nvim/lua/config/lualine.lua".source = ./config/lualine.lua;
+      "nvim/lua/config/telescope.lua".source = ./config/telescope.lua;
     };
   };
 }

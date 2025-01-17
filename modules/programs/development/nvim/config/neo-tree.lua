@@ -41,7 +41,6 @@ end
 function M.setup()
     -- Make FocusNeoTree available globally
     _G.FocusNeoTree = focus_neo_tree
-    print("Setting up neo-tree")
     require("neo-tree").setup({
         close_if_last_window = false,  -- Changed to false to prevent closing
         enable_git_status = true,
