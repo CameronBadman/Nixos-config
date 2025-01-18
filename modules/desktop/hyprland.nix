@@ -29,6 +29,7 @@
           "swww init"
           "dunst"
           "${pkgs.alacritty}/bin/alacritty"
+	  "waybar"
         ];
 
         "$terminal" = "${pkgs.alacritty}/bin/alacritty";
