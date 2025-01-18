@@ -1,17 +1,47 @@
 local M = {}
-
 function M.setup()
-	-- Setup sonarlint first
-	require("config.sonarlint").setup()
-
 	local lspconfig = require("lspconfig")
 	local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-	-- Server configurations
+	-- First register sonarlint configuration
+	require("lspconfig.configs").sonarlint = {
+		default_config = {
+			cmd = { "sonarlint-ls", "stdio" },
+			filetypes = {
+				"python",
+				"cpp",
+				"typescript",
+				"javascript",
+				"java",
+				"go",
+			},
+			root_dir = lspconfig.util.root_pattern(
+				".git",
+				"pyproject.toml",
+				"setup.py",
+				"pom.xml",
+				"package.json",
+				"go.mod"
+			),
+			single_file_support = true,
+			settings = {
+				sonarlint = {
+					pathToNodeExecutable = "node",
+					testFilePattern = {
+						"test/**/*",
+						"src/test/**/*",
+						"*_test.go",
+					},
+				},
+			},
+		},
+	}
+
+	-- Server configurations including sonarlint
 	local servers = {
 		gopls = {},
 		rust_analyzer = {},
-		ts_ls = { -- Changed from tsserver
+		ts_ls = {
 			root_dir = lspconfig.util.root_pattern("package.json"),
 		},
 		lua_ls = {
@@ -22,6 +52,7 @@ function M.setup()
 			},
 		},
 		nil_ls = {},
+		sonarlint = {}, -- Add sonarlint to the servers list
 	}
 
 	-- Setup each server
@@ -49,12 +80,12 @@ function M.setup()
 		},
 	})
 
-	-- Set diagnostic signs
+	-- Set diagnostic signs with descriptive icons
 	local signs = {
-		Error = " ",
-		Warn = " ",
-		Hint = "󰌵 ",
-		Info = " ",
+		Error = "󰅚 ", -- Explosion symbol for errors
+		Warn = "󰀦 ", -- Warning triangle
+		Hint = "󰌶 ", -- Lightbulb for hints
+		Info = "󰋼 ", -- Information symbol
 	}
 
 	for type, icon in pairs(signs) do
@@ -77,16 +108,16 @@ function M.setup()
 		callback = function(ev)
 			local opts = { buffer = ev.buf }
 
-			-- Navigation
-			vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-			vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-			vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-			vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-			vim.keymap.set("n", "<leader>D", vim.lsp.buf.type_definition, opts)
+			-- Navigation (moved from g prefix to leader)
+			vim.keymap.set("n", "<leader>ld", vim.lsp.buf.declaration, opts)
+			vim.keymap.set("n", "<leader>lf", vim.lsp.buf.definition, opts)
+			vim.keymap.set("n", "<leader>li", vim.lsp.buf.implementation, opts)
+			vim.keymap.set("n", "<leader>lr", vim.lsp.buf.references, opts)
+			vim.keymap.set("n", "<leader>lt", vim.lsp.buf.type_definition, opts)
 
 			-- Documentation
-			vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-			vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
+			vim.keymap.set("n", "<leader>lh", vim.lsp.buf.hover, opts)
+			vim.keymap.set("n", "<leader>ls", vim.lsp.buf.signature_help, opts)
 
 			-- Workspace management
 			vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts)
@@ -96,8 +127,8 @@ function M.setup()
 			end, opts)
 
 			-- Code actions
-			vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-			vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
+			vim.keymap.set("n", "<leader>ln", vim.lsp.buf.rename, opts)
+			vim.keymap.set({ "n", "v" }, "<leader>la", vim.lsp.buf.code_action, opts)
 
 			-- Diagnostics
 			vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
