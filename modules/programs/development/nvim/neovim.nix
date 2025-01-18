@@ -68,6 +68,7 @@
         cmp-cmdline
         luasnip
         cmp_luasnip
+        cmp-calc
 
         # Git
         gitsigns-nvim
@@ -115,88 +116,10 @@
       ];
 
       extraLuaConfig = ''
-                -- Basic vim options
-                vim.g.mapleader = " "
-                vim.g.maplocalleader = " "
-
-                -- Options
-                vim.opt.number = true
-                vim.opt.relativenumber = true
-                vim.opt.mouse = 'a'
-                vim.opt.showmode = false
-                vim.opt.clipboard = 'unnamedplus'
-                vim.opt.breakindent = true
-                vim.opt.undofile = true
-                vim.opt.ignorecase = true
-                vim.opt.smartcase = true
-                vim.opt.signcolumn = 'yes'
-                vim.opt.updatetime = 250
-                vim.opt.timeoutlen = 300
-                vim.opt.splitright = true
-                vim.opt.splitbelow = true
-                vim.opt.list = true
-                vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
-                vim.opt.inccommand = 'split'
-                vim.opt.cursorline = true
-                  vim.opt.scrolloff = 10
-                vim.opt.hlsearch = false
-
-        		-- Add these with your other vim.opt settings
-        		vim.opt.tabstop = 2       -- Number of spaces tabs count for
-        		vim.opt.softtabstop = 2   -- Number of spaces a tab counts for during editing
-        		vim.opt.shiftwidth = 2    -- Number of spaces for indentation
-        		vim.opt.expandtab = true  -- Use spaces instead of tabs
-
-                        -- Basic Keymaps
-                        vim.keymap.set('n', '<leader>h', ':nohlsearch<CR>')
-                        vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
-                        vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
-                        vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
-
-                        -- Theme setup
-                        vim.cmd.colorscheme("catppuccin")
-
-                        -- LSP Keymaps
-                        vim.api.nvim_create_autocmd('LspAttach', {
-                          group = vim.api.nvim_create_augroup('UserLspConfig', {}),
-                          callback = function(ev)
-                            local opts = { buffer = ev.buf }
-                            vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-                            vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-                            vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-                            vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-                            vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-                            vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, opts)
-                            vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, opts)
-                            vim.keymap.set('n', '<leader>wl', function()
-                              print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-                            end, opts)
-                            vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts)
-                            vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
-                            vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts)
-                            vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-                          end,
-                        })
-
-                	-- Debug kubectl loading
-                	  local status_ok, kubectl = pcall(require, "kubectl")
-                	  if not status_ok then
-                	    print("Failed to load kubectl plugin")
-                	    return
-                	  end
-                	  
-                	  -- Initialize kubectl with debug
-                	  print("Setting up kubectl")
-                	  kubectl.setup()
-                	  
-                	  -- Add explicit keybinding with debug
-                	  vim.keymap.set("n", "<leader>k", function()
-                	    print("Kubectl toggle triggered")
-                	    kubectl.toggle()
-                	  end, { noremap = true, silent = false })
-
-                        require('gitsigns').setup()
-                	require("config")
+           -- Theme setup
+        vim.cmd.colorscheme("catppuccin")
+        require('gitsigns').setup()
+        require("config")
       '';
     };
 
