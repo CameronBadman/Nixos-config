@@ -15,12 +15,12 @@
       flake = false;
     };
   };
-  outputs = { self, nixpkgs, home-manager, sops-nix, kubectl-nvim, ... }@inputs:  # Add kubectl-nvim here
+  outputs = { self, nixpkgs, home-manager, sops-nix, kubectl-nvim, ...
+    }@inputs: # Add kubectl-nvim here
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
-    in
-    {
+    in {
       nixosConfigurations = {
         nixos = nixpkgs.lib.nixosSystem {
           inherit system;
@@ -35,7 +35,7 @@
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = { inherit inputs; };
             }
-            ./users                     
+            ./users
             sops-nix.nixosModules.sops
           ];
         };
