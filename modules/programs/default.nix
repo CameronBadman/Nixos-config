@@ -1,10 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  imports = [
-    ./tools
-    ./media
-    ./development
-  ];
+  imports = [ ./tools ./media ./development ];
 }
 

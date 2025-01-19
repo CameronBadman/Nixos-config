@@ -37,7 +37,15 @@ function M.setup()
 	vim.keymap.set("n", "<leader>h", ":nohlsearch<CR>")
 	vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic message" })
 	vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic message" })
-	vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
+
+	-- Save current buffer mapping
+	vim.keymap.set({ "n", "i", "v" }, "<leader>w", "<Esc>:w<CR>", { desc = "Save current buffer" })
+
+	-- Simple quit mapping
+	vim.keymap.set("n", "<leader>q", ":q<CR>", { desc = "Close current window" })
+
+	-- Optional: Diagnostic list as a secondary option
+	vim.keymap.set("n", "<leader>d", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
 end
 
 return M
