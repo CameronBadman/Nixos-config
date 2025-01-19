@@ -1,9 +1,4 @@
-{ config, pkgs, lib, ... }:
-
-let utils = import ../utils.nix { inherit lib; };
-in {
-  imports = utils.getImports ./.;
-
+{ config, pkgs, ... }: {
   environment.systemPackages = with pkgs; [
     git
     ripgrep
@@ -24,5 +19,5 @@ in {
     age
     obsidian
   ];
-}
 
+}
