@@ -1,9 +1,7 @@
 { config, pkgs, lib, ... }:
 
-let
-  utils = import ../utils.nix { inherit lib; };
-in
-{
+let utils = import ../utils.nix { inherit lib; };
+in {
   imports = utils.getImports ./.;
 
   environment.systemPackages = with pkgs; [
@@ -24,6 +22,7 @@ in
     texstudio
     texlive.combined.scheme-full
     age
+    obsidian
   ];
 }
 
