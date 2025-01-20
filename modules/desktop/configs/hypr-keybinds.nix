@@ -1,9 +1,8 @@
-{ config, lib, pkgs, ... }:
-{
+{ config, lib, pkgs, ... }: {
   home-manager.users.cameron = { pkgs, ... }: {
     wayland.windowManager.hyprland.settings = {
       bind = [
-        "SUPER, Q, exec, ${pkgs.alacritty}/bin/alacritty"
+        "SUPER, Q, exec, ${pkgs.ghostty}/bin/ghostty"
         "SUPER, W, killactive"
         "SUPER SHIFT, E, exit"
         "SUPER, E, exec, $fileManager"
@@ -11,7 +10,7 @@
         "SUPER, D, exec, $menu"
         "SUPER, P, pseudo"
         "SUPER, J, togglesplit"
-        
+
         # Move focus
         "SUPER, left, movefocus, l"
         "SUPER, right, movefocus, r"
@@ -43,10 +42,8 @@
         "SUPER SHIFT, 0, movetoworkspace, 10"
       ];
 
-      bindm = [
-        "SUPER, mouse:272, movewindow"
-        "SUPER, mouse:273, resizewindow"
-      ];
+      bindm =
+        [ "SUPER, mouse:272, movewindow" "SUPER, mouse:273, resizewindow" ];
 
       binde = [
         # Volume

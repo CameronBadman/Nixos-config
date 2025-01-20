@@ -1,8 +1,5 @@
-{ config, lib, pkgs, ... }:
-{ 
-  imports = [
-    ./configs
-  ];
+{ config, lib, pkgs, ... }: {
+  imports = [ ./configs ];
 
   environment = {
     sessionVariables = {
@@ -16,38 +13,26 @@
       WAYLAND_DISPLAY = "wayland-1";
     };
   };
-    
+
   home-manager.users.cameron = { pkgs, ... }: {
     wayland.windowManager.hyprland = {
       enable = true;
       settings = {
-        monitor = [
-          ",preferred,auto,1"
-        ];
-        
-        exec-once = [
-          "swww init"
-          "dunst"
-          "${pkgs.alacritty}/bin/alacritty"
-	  "waybar"
-        ];
+        monitor = [ ",preferred,auto,1" ];
 
-        "$terminal" = "${pkgs.alacritty}/bin/alacritty";
+        exec-once = [ "swww init" "dunst" "waybar" ];
+
+        "$terminal" = "${pkgs.ghostty}/bin/ghostty";
         "$fileManager" = "dolphin";
         "$menu" = "wofi --show drun";
 
-        env = [
-          "XCURSOR_SIZE,24"
-          "QT_QPA_PLATFORMTHEME,qt5ct"
-        ];
+        env = [ "XCURSOR_SIZE,24" "QT_QPA_PLATFORMTHEME,qt5ct" ];
 
         input = {
           kb_layout = "us";
           kb_options = "ctrl:swapcaps";
           follow_mouse = 1;
-          touchpad = {
-            natural_scroll = true;
-          };
+          touchpad = { natural_scroll = true; };
           sensitivity = 0;
         };
 
@@ -87,13 +72,9 @@
           preserve_split = true;
         };
 
-        gestures = {
-          workspace_swipe = true;
-        };
+        gestures = { workspace_swipe = true; };
 
-        misc = {
-          force_default_wallpaper = 0;
-        };
+        misc = { force_default_wallpaper = 0; };
       };
     };
   };
