@@ -15,12 +15,18 @@
   };
 
   home-manager.users.cameron = { pkgs, ... }: {
+    home.packages = with pkgs; [ swww ];
     wayland.windowManager.hyprland = {
       enable = true;
       settings = {
         monitor = [ ",preferred,auto,1" ];
 
-        exec-once = [ "swww init" "dunst" "waybar" ];
+        exec-once = [
+          "swww-daemon"
+          "swww img --transition-fps 144 --transition-type any --transition-duration 1 ~/.config/hypr/wallpapers/background.gif"
+          "dunst"
+          "waybar"
+        ];
 
         "$terminal" = "${pkgs.alacritty}/bin/alacritty";
         "$fileManager" = "dolphin";
