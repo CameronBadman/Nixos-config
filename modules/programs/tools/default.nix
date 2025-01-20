@@ -11,6 +11,8 @@
     unzip
     wget
     gcc
+    gdb
+    binutils
     gnumake
     cmake
     ninja
