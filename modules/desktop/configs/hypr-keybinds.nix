@@ -2,7 +2,7 @@
   home-manager.users.cameron = { pkgs, ... }: {
     wayland.windowManager.hyprland.settings = {
       bind = [
-        "SUPER, Q, exec, ${pkgs.ghostty}/bin/ghostty"
+        "SUPER, Q, exec, ${pkgs.alacritty}/bin/alacritty"
         "SUPER, W, killactive"
         "SUPER SHIFT, E, exit"
         "SUPER, E, exec, $fileManager"

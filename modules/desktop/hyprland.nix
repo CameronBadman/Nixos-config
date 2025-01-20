@@ -22,7 +22,7 @@
 
         exec-once = [ "swww init" "dunst" "waybar" ];
 
-        "$terminal" = "${pkgs.ghostty}/bin/ghostty";
+        "$terminal" = "${pkgs.alacritty}/bin/alacritty";
         "$fileManager" = "dolphin";
         "$menu" = "wofi --show drun";
 
