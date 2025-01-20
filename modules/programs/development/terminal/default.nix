@@ -1,5 +1,5 @@
 { config, pkgs, lib, ... }: {
-  imports = [ ./alacritty.nix ./tmux.nix ];
+  imports = [ ./ghosty.nix ./tmux.nix ];
 
   environment.systemPackages = with pkgs; [ yazi wl-clipboard ];
 }
