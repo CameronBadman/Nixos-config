@@ -10,7 +10,7 @@
                 mkdir -p $CONFIG_DIR
                 cat > $CONFIG_DIR/alacritty.toml << 'EOL'
         [window]
-        opacity = 0.9
+        opacity = 0.8
         dynamic_title = true
 
         [window.padding]

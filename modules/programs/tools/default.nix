@@ -20,6 +20,8 @@
     texlive.combined.scheme-full
     age
     obsidian
+    ffmpeg-full
+    xxd
   ];
 
 }
