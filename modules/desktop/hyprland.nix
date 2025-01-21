@@ -23,7 +23,7 @@
 
         exec-once = [
           "swww-daemon"
-          "swww img --transition-fps 144 --transition-type any --transition-duration 1 ~/.config/hypr/wallpapers/background.gif"
+          "swww img --transition-fps 144 --transition-type any --transition-duration 1 ~/.config/hypr/wallpapers/back1.gif"
           "dunst"
           "waybar"
         ];
