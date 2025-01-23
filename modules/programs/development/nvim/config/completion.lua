@@ -40,6 +40,12 @@ function M.setup()
 			{ name = "path" },
 			{ name = "buffer" },
 		},
+		cs = { -- Add C# completion sources
+			{ name = "nvim_lsp" },
+			{ name = "luasnip" },
+			{ name = "path" },
+			{ name = "buffer" },
+		},
 	}
 
 	cmp.setup({

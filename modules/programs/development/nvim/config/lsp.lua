@@ -1,4 +1,5 @@
 local M = {}
+
 function M.setup()
 	local lspconfig = require("lspconfig")
 	local capabilities = require("cmp_nvim_lsp").default_capabilities()
@@ -14,6 +15,7 @@ function M.setup()
 				"javascript",
 				"java",
 				"go",
+				"cs", -- Add C# support for SonarLint
 			},
 			root_dir = lspconfig.util.root_pattern(
 				".git",
@@ -21,7 +23,9 @@ function M.setup()
 				"setup.py",
 				"pom.xml",
 				"package.json",
-				"go.mod"
+				"go.mod",
+				"*.sln", -- Add C# solution file pattern
+				"*.csproj" -- Add C# project file pattern
 			),
 			single_file_support = true,
 			settings = {
@@ -37,7 +41,7 @@ function M.setup()
 		},
 	}
 
-	-- Server configurations including sonarlint
+	-- Server configurations including sonarlint and omnisharp
 	local servers = {
 		gopls = {},
 		rust_analyzer = {},
@@ -53,6 +57,20 @@ function M.setup()
 		},
 		nil_ls = {},
 		sonarlint = {}, -- Add sonarlint to the servers list
+		omnisharp = { -- Add omnisharp for C# support
+			cmd = { "omnisharp", "--languageserver", "--hostPID", tostring(vim.fn.getpid()) },
+			filetypes = { "cs", "csproj", "sln" },
+			root_dir = lspconfig.util.root_pattern("*.sln", "*.csproj"),
+			settings = {
+				RoslynExtensionsOptions = {
+					EnableAnalyzersSupport = true,
+					EnableImportCompletion = true,
+				},
+				FormattingOptions = {
+					EnableEditorConfigSupport = true,
+				},
+			},
+		},
 	}
 
 	-- Setup each server
