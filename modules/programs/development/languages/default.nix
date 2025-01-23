@@ -1,9 +1,7 @@
 { config, pkgs, lib, ... }:
 
-let
-  utils = import ../../utils.nix { inherit lib; };
-in
-{
+let utils = import ../../utils.nix { inherit lib; };
+in {
   imports = utils.getImports ./.;
 
   environment.systemPackages = with pkgs; [
@@ -15,15 +13,15 @@ in
     go
     luajit
     terraform
-    
+
     # C/C++
     clang-tools
-    
+
     # Rust
     cargo
     rustc
     rustfmt
-    
+
     # Haskell
     ghc
     cabal-install
@@ -42,6 +40,9 @@ in
     java-language-server
     sonarlint-ls
     jdk17
+
+    #C#
+    dotnet-sdk
   ];
 }
 
