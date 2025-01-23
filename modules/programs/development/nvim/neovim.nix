@@ -45,6 +45,7 @@
         # Additional Go Tools (from previous discussion)
         golangci-lint # Go linter suite
       ];
+
       plugins = with pkgs.vimPlugins; [
         # Package management
         lazy-nvim
@@ -88,7 +89,8 @@
           type = "lua"; # Add this line
         }
 
-        catppuccin-nvim
+        # Replace catppuccin-nvim with kanagawa-nvim
+        kanagawa-nvim
 
         # Syntax and languages
         (nvim-treesitter.withPlugins (plugins:
@@ -116,8 +118,21 @@
       ];
 
       extraLuaConfig = ''
-           -- Theme setup
-        vim.cmd.colorscheme("catppuccin")
+        -- Enable transparency
+        vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+        vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+        vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
+
+        -- Kanagawa setup with transparency
+        require("kanagawa").setup({
+          theme = "wave", -- Available themes: wave, dragon, lotus
+          transparent = true, -- Enable transparency
+        })
+
+        -- Set colorscheme
+        vim.cmd.colorscheme("kanagawa")
+
+        -- Other configurations
         require('gitsigns').setup()
         require("config")
       '';
