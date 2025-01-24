@@ -1,9 +1,6 @@
 { config, pkgs, lib, ... }:
-let
-  utils = import ../utils.nix { inherit lib; };
-in
+
 {
-  imports = utils.getImports ./.;
   environment.systemPackages = with pkgs; [
     google-chrome
     vesktop
@@ -11,6 +8,6 @@ in
     pavucontrol
     blueman
     bluetuith
+    (import ./cider.nix { inherit pkgs lib; })
   ];
 }
-
