@@ -10,6 +10,12 @@ function M.setup()
 
 	-- Language specific sources using available nixpkgs sources
 	local sources_config = {
+		c = { -- Add C completion sources
+			{ name = "nvim_lsp" },
+			{ name = "luasnip" },
+			{ name = "path" },
+			{ name = "buffer" },
+		},
 		cpp = {
 			{ name = "nvim_lsp" },
 			{ name = "luasnip" },
@@ -40,7 +46,7 @@ function M.setup()
 			{ name = "path" },
 			{ name = "buffer" },
 		},
-		cs = { -- Add C# completion sources
+		cs = {
 			{ name = "nvim_lsp" },
 			{ name = "luasnip" },
 			{ name = "path" },

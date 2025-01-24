@@ -43,6 +43,21 @@ function M.setup()
 
 	-- Server configurations including sonarlint and omnisharp
 	local servers = {
+		clangd = { -- Add clangd for C/C++
+			cmd = { "clangd" },
+			filetypes = { "c", "cpp" },
+			root_dir = lspconfig.util.root_pattern(
+				"compile_commands.json", -- Preferred for clangd
+				"CMakeLists.txt",
+				"Makefile",
+				".git"
+			),
+			settings = {
+				clangd = {
+					fallbackFlags = { "-std=c17" }, -- Default C standard
+				},
+			},
+		},
 		gopls = {},
 		rust_analyzer = {},
 		ts_ls = {
@@ -56,8 +71,8 @@ function M.setup()
 			},
 		},
 		nil_ls = {},
-		sonarlint = {}, -- Add sonarlint to the servers list
-		omnisharp = { -- Add omnisharp for C# support
+		sonarlint = {},
+		omnisharp = {
 			cmd = { "omnisharp", "--languageserver", "--hostPID", tostring(vim.fn.getpid()) },
 			filetypes = { "cs", "csproj", "sln" },
 			root_dir = lspconfig.util.root_pattern("*.sln", "*.csproj"),
