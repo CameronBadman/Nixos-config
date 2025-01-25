@@ -4,22 +4,26 @@
     package = pkgs.tmux;
     baseIndex = 1;
     keyMode = "vi";
-    shortcut = "Space"; # Changed from "a" to "Space"
-    customPaneNavigationAndResize = true;
     escapeTime = 0;
     terminal = "tmux-256color";
     historyLimit = 2000;
-    plugins = [ pkgs.tmuxPlugins.tmux-nova ];
+    plugins = with pkgs.tmuxPlugins; [
+      tmux-powerline # Add tmux-powerline plugin
+      resurrect # Add tmux-resurrect plugin
+      continuum # Add tmux-continuum plugin
+      fzf-tmux-url # Optional: For fzf integration
+    ];
+
     extraConfig = ''
       # Basic Settings
       set -g mouse on
+      set -g status on  # Ensure the status bar is enabled
       set -g status-position top
       setw -g aggressive-resize off
       setw -g clock-mode-style 12
       set -g status-keys vi
-      # Force 256 colors
-      set -g default-terminal "tmux-256color"
-      set -sa terminal-features ',xterm-256color:RGB'
+      set -ga terminal-features ',xterm-256color:RGB'
+
       # Vim-style navigation
       bind h select-pane -L
       bind j select-pane -D
@@ -29,43 +33,61 @@
       bind -r J resize-pane -D 5
       bind -r K resize-pane -U 5
       bind -r L resize-pane -R 5
-      # Changed from C-a to C-Space for last-window
-      bind C-Space last-window
+
+      # Set prefix to Ctrl + Space
+      unbind C-b
+      set -g prefix C-Space
+      bind C-Space send-prefix
+
+      # Prefix + r to rename window
+      bind r command-prompt -I "#W" "rename-window '%%'"
+
       # Vi copy mode
       bind-key -T copy-mode-vi v send-keys -X begin-selection
-      bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "wl-copy"
+      bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "${
+        if config.services.xserver.enable then
+          "xclip -in -selection clipboard"
+        else
+          "wl-copy"
+      }"
+
       # Split panes
       bind | split-window -h -c "#{pane_current_path}"
       bind - split-window -v -c "#{pane_current_path}"
-      # Status bar styling
-      set -g status on
-      set -g status-style bg=#4c566a,fg=#d8dee9
-      set -g status-position top
-      set -g status-justify left
-      set -g status-left-length 100
-      set -g status-right-length 100
-      set -g window-status-format "#[fg=#4c566a,bg=#2e3440]#[fg=#d8dee9,bg=#4c566a] #I #W #[fg=#4c566a,bg=#2e3440]"
-      set -g window-status-current-format "#[fg=#89c0d0,bg=#2e3440]#[fg=#2e3540,bg=#89c0d0] #I #W #[fg=#89c0d0,bg=#2e3440]"
-      # Nova Configuration
-      set -g @nova-nerdfonts true
-      set -g @nova-nerdfonts-left ""
-      set -g @nova-nerdfonts-right ""
-      set -g @nova-status-style-bg "#4c566a"
-      set -g @nova-status-style-fg "#d8dee9"
-      set -g @nova-status-style-active-bg "#89c0d0"
-      set -g @nova-status-style-active-fg "#2e3540"
-      set -g @nova-status-style-double-bg "#2d3540"
-      set -g @nova-pane "#I#{?pane_in_mode,  #{pane_mode},}  #W"
-      set -g @nova-segment-mode "#{?client_prefix,Ω,ω}"
-      set -g @nova-segment-mode-colors "#78a2c1 #2e3440"
-      set -g @nova-segment-whoami "#(whoami)@#h"
-      set -g @nova-segment-whoami-colors "#78a2c1 #2e3440"
-      set -g @nova-rows 0
-      set -g @nova-segments-0-left "mode"
-      set -g @nova-segments-0-right "whoami"
-      # Ensure nova is loaded last
-      run-shell ${pkgs.tmuxPlugins.tmux-nova}/share/tmux-plugins/nova/nova.tmux
+
+      # Load tmux-powerline
+      run-shell ${pkgs.tmuxPlugins.tmux-powerline}/share/tmux-plugins/tmux-powerline/powerline.tmux
+
+      # Customize tmux-powerline to show session and git branch on the left
+      set -g @powerline-segments-left "session hostname git"
+      set -g @powerline-segments-right "pwd date"
+
+      # tmux-resurrect configuration
+      set -g @resurrect-capture-pane-contents 'on' # Save pane contents
+      set -g @resurrect-strategy-vim 'session'     # Restore vim sessions
+      set -g @resurrect-strategy-nvim 'session'    # Restore neovim sessions
+
+      # tmux-continuum configuration
+      set -g @continuum-restore 'on'               # Enable automatic restore
+      set -g @continuum-save-interval '15'         # Save session every 15 minutes
+
+      # Key bindings for tmux-resurrect
+      bind-key S run-shell ${pkgs.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect/scripts/save.sh
+      bind-key R run-shell ${pkgs.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect/scripts/restore.sh
+
+      # Key binding to switch between sessions in the background
+      bind-key -r s choose-session
+      bind-key -r C-s choose-session
+
+      # Optional: Use fzf to switch between sessions
+      bind-key -r f run-shell "tmux list-sessions | fzf --reverse | cut -d: -f1 | xargs tmux switch-client -t"
     '';
   };
-  environment.systemPackages = with pkgs; [ tmux ];
+
+  environment.systemPackages = with pkgs; [
+    tmux
+    coreutils # Ensure basic utilities are available
+    fzf # Required for fzf-based session switching
+    (if config.services.xserver.enable then xclip else wl-clipboard)
+  ];
 }
