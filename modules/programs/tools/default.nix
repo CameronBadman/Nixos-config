@@ -22,6 +22,7 @@
     obsidian
     ffmpeg-full
     xxd
+    nix-output-monitor
   ];
 
 }

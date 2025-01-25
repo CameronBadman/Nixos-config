@@ -1,5 +1,6 @@
 {
   description = "nixos config";
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager = {
@@ -15,8 +16,8 @@
       flake = false;
     };
   };
-  outputs = { self, nixpkgs, home-manager, sops-nix, kubectl-nvim, ...
-    }@inputs: # Add kubectl-nvim here
+
+  outputs = { self, nixpkgs, home-manager, sops-nix, kubectl-nvim, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -40,5 +41,9 @@
           ];
         };
       };
+
+      # Add a default package for `nom build .` to work
+      packages.x86_64-linux.default =
+        self.nixosConfigurations.nixos.config.system.build.toplevel;
     };
 }
