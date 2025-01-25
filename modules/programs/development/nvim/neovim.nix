@@ -44,6 +44,7 @@
 
         # Additional Go Tools (from previous discussion)
         golangci-lint # Go linter suite
+
       ];
 
       plugins = with pkgs.vimPlugins; [
@@ -80,6 +81,8 @@
         telescope-fzf-native-nvim
         neo-tree-nvim
         lualine-nvim
+
+        multicursors-nvim
 
         {
           plugin = pkgs.vimUtils.buildVimPlugin {

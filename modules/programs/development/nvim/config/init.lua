@@ -11,6 +11,7 @@ local function load_config()
 	require("config.linting").setup()
 	require("config.lsp").setup()
 	require("config.completion").setup()
+	require("config.editing").setup()
 end
 
 -- Initialize everything
