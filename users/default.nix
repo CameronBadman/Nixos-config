@@ -1,9 +1,22 @@
-{ config, lib, pkgs, ... }:
-{
+{ config, lib, pkgs, ... }: {
+  # Enable Docker
+  virtualisation.docker.enable = true;
+
+  # Add your user to the "docker" group
+  users.users.cameron = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" "users" "docker" ];
+    initialPassword = "temppass";
+    shell = pkgs.bash;
+    home = "/home/cameron";
+    createHome = true;
+  };
+
+  # Home Manager configuration
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    backupFileExtension = "backup"; 
+    backupFileExtension = "backup";
     users.cameron = { pkgs, ... }: {
       home.stateVersion = "23.11";
       fonts.fontconfig.enable = false;
@@ -15,24 +28,14 @@
         matchBlocks = {
           "github.com" = {
             identityFile = "~/.ssh/github_key";
-            extraOptions = {
-              AddKeysToAgent = "yes";
-            };
+            extraOptions = { AddKeysToAgent = "yes"; };
           };
         };
       };
     };
   };
-  
-  users.users.cameron = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "users" ];
-    initialPassword = "temppass";
-    shell = pkgs.bash;
-    home = "/home/cameron";
-    createHome = true;  
-  };
-  
+
+  # Sudo configuration
   security.sudo.extraConfig = ''
     Defaults env_keep += "HOME"
     Defaults env_keep += "XDG_DATA_DIRS"
