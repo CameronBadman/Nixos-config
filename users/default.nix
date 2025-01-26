@@ -1,4 +1,7 @@
 { config, lib, pkgs, ... }: {
+  # Set the timezone to Brisbane, Australia
+  time.timeZone = "Australia/Brisbane";
+
   # Enable Docker
   virtualisation.docker.enable = true;
 
