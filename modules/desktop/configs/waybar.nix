@@ -6,15 +6,23 @@
         mainBar = {
           layer = "top";
           position = "top";
-          height = 34;
-          spacing = 4;
-          margin-top = 3;
+          height = 30; # Slightly smaller height for a more compact look
+          spacing = 2; # Reduced spacing between widgets
+          margin-top = 2; # Reduced top margin
+          margin-bottom = 2; # Reduced bottom margin
 
-          # Moved clock to left side and reordered modules
           modules-left = [ "hyprland/workspaces" "hyprland/window" "clock" ];
-          modules-center = [ ];
-          modules-right =
-            [ "pulseaudio" "network" "cpu" "memory" "battery" "tray" ];
+          modules-center = [ ]; # Center is empty for now
+          modules-right = [
+            "pulseaudio"
+            "network"
+            "bluetooth"
+            "cider-launcher"
+            "cpu"
+            "memory"
+            "battery"
+            "tray"
+          ];
 
           "hyprland/workspaces" = {
             format = "{name}";
@@ -96,21 +104,33 @@
             tooltip-format = "{desc}";
           };
 
+          bluetooth = {
+            format = "󰂯";
+            on-click = "blueman-manager"; # Open Blueman Manager on click
+            tooltip = false;
+          };
+
+          cider-launcher = {
+            format = "󰎈"; # Music note icon
+            on-click = "cider"; # Launch Cider on click
+            tooltip = false;
+          };
+
           tray = {
-            icon-size = 18;
-            spacing = 10;
+            icon-size = 16; # Smaller icon size for the tray
+            spacing = 5; # Reduced spacing between tray icons
           };
         };
       };
       style = ''
-        * {
+                 * {
           border: none;
           border-radius: 0;
           font-family: "JetBrainsMono Nerd Font", "Noto Sans", "Sans-Serif";
-          font-size: 13px;
+          font-size: 12px;  /* Ensure semicolon is present */
           min-height: 0;
           transition-property: background-color;
-          transition-duration: 0.5s;
+          transition-duration: 0.5s;  /* Ensure semicolon is present */
         }
 
         window#waybar {
@@ -125,26 +145,26 @@
         }
 
         #workspaces button {
-          padding: 0 5px;
-          margin: 4px 3px;
+          padding: 0 4px;
+          margin: 2px 2px;
           color: #6c7086;
-          border-radius: 6px;
+          border-radius: 4px;
           transition: all 0.3s ease;
         }
 
         #workspaces button.active {
           color: #1e1e2e;
           background: #cba6f7;
-          border-radius: 6px;
-          min-width: 35px;
-          box-shadow: rgba(0, 0, 0, 0.2) 0 0 3px;
+          border-radius: 4px;
+          min-width: 30px;
+          box-shadow: rgba(0, 0, 0, 0.2) 0 0 2px;
         }
 
         #workspaces button:hover {
           background: #11111b;
           color: #cdd6f4;
-          border-radius: 6px;
-          box-shadow: rgba(0, 0, 0, 0.2) 0 0 3px;
+          border-radius: 4px;
+          box-shadow: rgba(0, 0, 0, 0.2) 0 0 2px;
         }
 
         #clock,
@@ -153,11 +173,13 @@
         #memory,
         #network,
         #pulseaudio,
+        #bluetooth,
+        #cider-launcher,
         #tray {
-          padding: 0 12px;
-          margin: 3px 6px;
+          padding: 0 8px;
+          margin: 2px 3px;
           color: #cdd6f4;
-          border-radius: 9px;
+          border-radius: 6px;
           background: #11111b;
           border: 1px solid rgba(100, 114, 125, 0.1);
         }
@@ -188,12 +210,12 @@
         tooltip {
           background: rgba(21, 18, 27, 0.95);
           border: 1px solid rgba(100, 114, 125, 0.2);
-          border-radius: 8px;
+          border-radius: 6px;
         }
 
         tooltip label {
           color: #cdd6f4;
-          padding: 5px;
+          padding: 4px;
         }
       '';
     };
