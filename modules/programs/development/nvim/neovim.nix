@@ -82,7 +82,7 @@
         neo-tree-nvim
         lualine-nvim
 
-        multicursors-nvim
+        vim-visual-multi
 
         {
           plugin = pkgs.vimUtils.buildVimPlugin {
