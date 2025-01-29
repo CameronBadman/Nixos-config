@@ -42,7 +42,7 @@ function M.setup()
     -- Make FocusNeoTree available globally
     _G.FocusNeoTree = focus_neo_tree
     require("neo-tree").setup({
-        close_if_last_window = false,  -- Changed to false to prevent closing
+        close_if_last_window = false, -- Changed to false to prevent closing
         enable_git_status = true,
         enable_diagnostics = true,
         open_files_do_not_replace_types = {
@@ -120,9 +120,9 @@ function M.setup()
     })
 
     -- Map leader-e to focus rather than toggle
-    vim.keymap.set('n', '<leader>e', function()
+    vim.keymap.set("n", "<leader>e", function()
         focus_neo_tree()
-    end, { noremap = true, silent = true, desc = 'Focus Neo-tree' })
+    end, { noremap = true, silent = true, desc = "Focus Neo-tree" })
 end
 
 return M

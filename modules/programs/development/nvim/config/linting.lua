@@ -1,5 +1,4 @@
 local M = {}
-
 function M.setup()
 	local status_ok, lint = pcall(require, "lint")
 	if not status_ok then
@@ -13,17 +12,13 @@ function M.setup()
 	end
 
 	local linters_by_ft = {
-		-- Web Development
 		javascript = is_linter_available("eslint") and { "eslint" } or {},
 		typescript = is_linter_available("eslint") and { "eslint" } or {},
-		-- Systems Programming
 		cpp = is_linter_available("cpplint") and { "cpplint" } or {},
 		c = is_linter_available("cpplint") and { "cpplint" } or {},
 		go = is_linter_available("golangci-lint") and { "golangcilint" } or {},
-		-- Scripting Languages
 		python = is_linter_available("pylint") and { "pylint" } or {},
 		sh = is_linter_available("shellcheck") and { "shellcheck" } or {},
-		-- Documentation/Text
 		markdown = is_linter_available("codespell") and { "codespell" } or {},
 	}
 
@@ -40,19 +35,49 @@ function M.setup()
 	-- Set linters
 	lint.linters_by_ft = linters_by_ft
 
-	-- Autocommands for automatic linting
-	vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave" }, {
-		group = vim.api.nvim_create_augroup("NvimLintGroup", { clear = true }),
-		callback = function(event)
-			local ft = vim.bo[event.buf].filetype
+	-- Create a debounced version of the lint function
+	local lint_timer = nil
+	local function debounced_lint()
+		if lint_timer then
+			vim.fn.timer_stop(lint_timer)
+		end
+		lint_timer = vim.fn.timer_start(1000, function()
+			local ft = vim.bo.filetype
 			local linters = lint.linters_by_ft[ft] or {}
-
-			-- Only try to lint if linters are available
 			if #linters > 0 then
 				pcall(function()
 					lint.try_lint()
 				end)
 			end
+		end)
+	end
+
+	-- Autocommands for automatic linting
+	-- Removed InsertLeave and added debouncing
+	vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost" }, {
+		group = vim.api.nvim_create_augroup("NvimLintGroup", { clear = true }),
+		callback = function()
+			debounced_lint()
+		end,
+	})
+
+	-- Optionally, add a more controlled InsertLeave trigger with longer debounce
+	vim.api.nvim_create_autocmd("InsertLeave", {
+		group = vim.api.nvim_create_augroup("NvimLintInsertGroup", { clear = true }),
+		callback = function()
+			-- Longer debounce for InsertLeave to prevent the space lag
+			if lint_timer then
+				vim.fn.timer_stop(lint_timer)
+			end
+			lint_timer = vim.fn.timer_start(2000, function()
+				local ft = vim.bo.filetype
+				local linters = lint.linters_by_ft[ft] or {}
+				if #linters > 0 then
+					pcall(function()
+						lint.try_lint()
+					end)
+				end
+			end)
 		end,
 	})
 
@@ -69,9 +94,6 @@ function M.setup()
 		local hl = "DiagnosticSign" .. type
 		vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 	end
-
-	-- Debug logging
-	vim.notify("Linting configuration loaded", vim.log.levels.INFO)
 end
 
 return M

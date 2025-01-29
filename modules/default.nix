@@ -1,9 +1,3 @@
-{ config, lib, pkgs, ... }:
-{
-  imports = [
-    ./core
-    ./desktop
-    ./hardware
-    ./programs
-  ];
+{ config, lib, pkgs, ... }: {
+  imports = [ ./core ./desktop ./hardware ./programs ];
 }

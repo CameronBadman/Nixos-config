@@ -15,7 +15,7 @@ function M.setup()
 				"javascript",
 				"java",
 				"go",
-				"cs", -- Add C# support for SonarLint
+				"cs",
 			},
 			root_dir = lspconfig.util.root_pattern(
 				".git",
@@ -24,18 +24,31 @@ function M.setup()
 				"pom.xml",
 				"package.json",
 				"go.mod",
-				"*.sln", -- Add C# solution file pattern
-				"*.csproj" -- Add C# project file pattern
+				"*.sln",
+				"*.csproj"
 			),
 			single_file_support = true,
 			settings = {
 				sonarlint = {
+					disableTelemetry = true,
+					output = {
+						showAnalyzerLogs = false,
+						showVerboseLogs = false,
+					},
 					pathToNodeExecutable = "node",
 					testFilePattern = {
 						"test/**/*",
 						"src/test/**/*",
 						"*_test.go",
 					},
+					rules = {
+						["python:S1135"] = {
+							level = "off",
+						},
+					},
+					analysisOnSave = true,
+					analysisOnType = false,
+					analysisOnOpen = true,
 				},
 			},
 		},
@@ -43,18 +56,13 @@ function M.setup()
 
 	-- Server configurations including sonarlint and omnisharp
 	local servers = {
-		clangd = { -- Add clangd for C/C++
+		clangd = {
 			cmd = { "clangd" },
 			filetypes = { "c", "cpp" },
-			root_dir = lspconfig.util.root_pattern(
-				"compile_commands.json", -- Preferred for clangd
-				"CMakeLists.txt",
-				"Makefile",
-				".git"
-			),
+			root_dir = lspconfig.util.root_pattern("compile_commands.json", "CMakeLists.txt", "Makefile", ".git"),
 			settings = {
 				clangd = {
-					fallbackFlags = { "-std=c17" }, -- Default C standard
+					fallbackFlags = { "-std=c17" },
 				},
 			},
 		},
@@ -67,6 +75,15 @@ function M.setup()
 			settings = {
 				Lua = {
 					diagnostics = { globals = { "vim" } },
+					workspace = {
+						checkThirdParty = false,
+					},
+					telemetry = {
+						enable = false,
+					},
+					completion = {
+						callSnippet = "Replace",
+					},
 				},
 			},
 		},
@@ -90,7 +107,7 @@ function M.setup()
 
 	-- Setup each server
 	for server, config in pairs(servers) do
-		if lspconfig[server] then -- Check if server exists
+		if lspconfig[server] then
 			config.capabilities = capabilities
 			lspconfig[server].setup(config)
 		else
@@ -100,25 +117,32 @@ function M.setup()
 
 	-- Configure diagnostic settings
 	vim.diagnostic.config({
-		virtual_text = true, -- Show diagnostics beside the code
-		signs = true, -- Show diagnostic signs in the sign column
-		underline = true, -- Underline text with diagnostic
-		update_in_insert = false, -- Don't update diagnostics in insert mode
-		severity_sort = true, -- Sort diagnostics by severity
+		virtual_text = true,
+		signs = true,
+		underline = true,
+		update_in_insert = false,
+		severity_sort = true,
 		float = {
-			border = "rounded", -- Add border to floating windows
-			source = "always", -- Always show diagnostic source
-			header = "", -- No header in diagnostic window
-			prefix = "", -- No prefix in diagnostic window
+			border = "rounded",
+			source = "always",
+			header = "",
+			prefix = "",
 		},
+	})
+
+	-- Set up debounced diagnostics handler
+	local orig_handler = vim.lsp.handlers["textDocument/publishDiagnostics"]
+	vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(orig_handler, {
+		update_in_insert = false,
+		debounce = 500,
 	})
 
 	-- Set diagnostic signs with descriptive icons
 	local signs = {
-		Error = "󰅚 ", -- Explosion symbol for errors
-		Warn = "󰀦 ", -- Warning triangle
-		Hint = "󰌶 ", -- Lightbulb for hints
-		Info = "󰋼 ", -- Information symbol
+		Error = "󰅚 ",
+		Warn = "󰀦 ",
+		Hint = "󰌶 ",
+		Info = "󰋼 ",
 	}
 
 	for type, icon in pairs(signs) do

@@ -1,28 +1,51 @@
-{ config, pkgs, lib, ... }:
-
+{ pkgs, lib, ... }:
 let utils = import ../../utils.nix { inherit lib; };
 in {
   imports = utils.getImports ./.;
 
   environment.systemPackages = with pkgs; [
-    # Languages
-    nodejs
-    python3
+    # Python Environment
+    python311
     python311Packages.pip
+    python311Packages.opencv4 # OpenCV
+    gtk3
+    libGL
+    python311Packages.numpy # Required for OpenCV
+    python311Packages.tkinter
     poetry
+    pyenv
+    stdenv.cc.cc.lib
+
+    libGLU
+    xorg.libX11
+    xorg.libXrender
+    xorg.libXext
+
+    # Computer Vision Dependencies
+    pkg-config
+    cmake
+    ffmpeg
+    v4l-utils # Video for Linux utilities
+
+    # Development Tools
+    sqlite
+
+    # Languages & Runtime
+    nodejs
     go
     luajit
     terraform
 
-    # C/C++
+    # C/C++ Tools
     clang-tools
+    gcc
 
-    # Rust
+    # Rust Tools
     cargo
     rustc
     rustfmt
 
-    # Haskell
+    # Haskell Tools
     ghc
     cabal-install
     stack
@@ -39,10 +62,14 @@ in {
     metals
     java-language-server
     sonarlint-ls
+
+    # Java
     jdk17
 
-    #C#
+    # .NET
     dotnet-sdk
   ];
-}
 
+  # Optional: Add environment variables if needed
+  environment.variables = { OPENCV_LOG_LEVEL = "INFO"; };
+}
