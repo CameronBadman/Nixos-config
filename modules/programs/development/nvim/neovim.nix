@@ -1,14 +1,18 @@
-{ pkgs, inputs, ... }:
-
-{
+# neovim.nix
+{ pkgs, inputs, ... }: {
   home-manager.users.cameron = {
+    # Global packages that need to be available in PATH
+    home.packages = with pkgs; [ golangci-lint ];
+
     programs.neovim = {
       enable = true;
       defaultEditor = true;
       viAlias = true;
       vimAlias = true;
 
+      # Packages needed by Neovim
       extraPackages = with pkgs; [
+        # Language Servers
         gopls # Go language server
         rust-analyzer # Rust language server
         nodePackages.typescript-language-server # TypeScript/JavaScript language server
@@ -38,20 +42,17 @@
         # Kubernetes Tools
         kubectl # Kubernetes command-line tool
 
-        # Additional C/C++ Tools (from previous discussion)
+        # C/C++ Tools
         clang-tools # Includes clang-format
         cpplint # Google's C++ linter
-
-        # Additional Go Tools (from previous discussion)
-        golangci-lint # Go linter suite
-
       ];
 
+      # Neovim Plugins
       plugins = with pkgs.vimPlugins; [
-        # Package management
+        # Package Management
         lazy-nvim
 
-        # Core plugins
+        # Core Plugins
         plenary-nvim
         nvim-web-devicons
         conform-nvim
@@ -72,30 +73,29 @@
         cmp_luasnip
         cmp-calc
 
-        # Git
+        # Git Integration
         gitsigns-nvim
         vim-fugitive
 
-        # File navigation and UI
+        # File Navigation and UI
         telescope-nvim
         telescope-fzf-native-nvim
         neo-tree-nvim
         lualine-nvim
-
         vim-visual-multi
-
+        none-ls-nvim
         {
           plugin = pkgs.vimUtils.buildVimPlugin {
             name = "kubectl-nvim";
             src = inputs.kubectl-nvim;
           };
-          type = "lua"; # Add this line
+          type = "lua";
         }
 
-        # Replace catppuccin-nvim with kanagawa-nvim
+        # Theme
         kanagawa-nvim
 
-        # Syntax and languages
+        # Syntax Highlighting and Languages
         (nvim-treesitter.withPlugins (plugins:
           with plugins; [
             lua
@@ -120,16 +120,17 @@
           ]))
       ];
 
+      # Lua Configuration
       extraLuaConfig = ''
         -- Enable transparency
         vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
         vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
         vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
 
-        -- Kanagawa setup with transparency
+        -- Kanagawa theme setup with transparency
         require("kanagawa").setup({
-          theme = "wave", -- Available themes: wave, dragon, lotus
-          transparent = true, -- Enable transparency
+          theme = "wave",    -- Available themes: wave, dragon, lotus
+          transparent = true -- Enable transparency
         })
 
         -- Set colorscheme
@@ -141,11 +142,11 @@
       '';
     };
 
+    # Additional configuration files
     xdg.configFile = {
       "nvim/lua/config" = {
         source = ./config;
-        recursive =
-          true; # This will copy all files in the directory recursively
+        recursive = true; # Copy all files in the directory recursively
       };
     };
   };

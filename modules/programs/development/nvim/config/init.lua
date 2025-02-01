@@ -16,7 +16,7 @@ end
 
 -- Initialize everything
 load_config()
-
+vim.lsp.set_log_level("debug")
 return {
     setup = load_config,
 }

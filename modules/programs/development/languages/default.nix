@@ -19,7 +19,19 @@ in {
     libGLU
     xorg.libX11
     xorg.libXrender
+    xorg.libX11.dev
+    xorg.libXcursor
+    xorg.libXi
+    xorg.libXinerama
+    xorg.libXrandr
+    xorg.libXxf86vm
+    libxkbcommon
     xorg.libXext
+    mesa
+    xorg.libxcb
+    openssl
+    icu
+    zlib
 
     # Computer Vision Dependencies
     pkg-config
@@ -33,6 +45,7 @@ in {
     # Languages & Runtime
     nodejs
     go
+    fyne
     luajit
     terraform
 
@@ -62,6 +75,7 @@ in {
     metals
     java-language-server
     sonarlint-ls
+    go-critic
 
     # Java
     jdk17
