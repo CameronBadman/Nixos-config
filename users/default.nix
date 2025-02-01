@@ -1,10 +1,8 @@
 { config, lib, pkgs, ... }: {
   # Set the timezone to Brisbane, Australia
   time.timeZone = "Australia/Brisbane";
-
   # Enable Docker
   virtualisation.docker.enable = true;
-
   # Add your user to the "docker" group
   users.users.cameron = {
     isNormalUser = true;
@@ -14,7 +12,6 @@
     home = "/home/cameron";
     createHome = true;
   };
-
   # Home Manager configuration
   home-manager = {
     useGlobalPkgs = true;
@@ -37,7 +34,6 @@
       };
     };
   };
-
   # Sudo configuration
   security.sudo.extraConfig = ''
     Defaults env_keep += "HOME"
@@ -48,4 +44,5 @@
     Defaults env_keep += "XDG_DATA_HOME"
     Defaults env_keep += "NEOVIM_STATE_DIR"
   '';
+
 }
