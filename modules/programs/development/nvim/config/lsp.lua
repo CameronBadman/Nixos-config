@@ -3,72 +3,6 @@ local M = {}
 function M.setup()
     local lspconfig = require("lspconfig")
     local capabilities = require("cmp_nvim_lsp").default_capabilities()
-    local null_ls = require("null-ls")
-    local helpers = require("null-ls.helpers")
-
-    -- Custom gocritic configuration
-    local gocritic = {
-        method = null_ls.methods.DIAGNOSTICS,
-        filetypes = { "go" },
-        generator = null_ls.generator({
-            command = "gocritic",
-            args = { "check", "-enableAll", "$FILENAME" },
-            to_stdin = true,
-            from_stderr = true,
-            format = "line",
-            on_output = helpers.diagnostics.from_patterns({
-                {
-                    pattern = [[(%d+):(%d+):(%w+):(.*)]],
-                    groups = { "row", "col", "severity", "message" },
-                },
-            }),
-        }),
-    }
-
-    local golangci_lint = {
-        method = null_ls.methods.DIAGNOSTICS,
-        filetypes = { "go" },
-        generator = null_ls.generator({
-            command = "golangci-lint",
-            args = function(params)
-                return {
-                    "run",
-                    "--out-format=colored-line-number",
-                    "--path-prefix",
-                    params.root,
-                    "--fix=false",
-                    params.bufname or "", -- Use the buffer name directly
-                }
-            end,
-            to_stdin = false,
-            from_stderr = true,
-            format = "line",
-            on_output = helpers.diagnostics.from_patterns({
-                {
-                    pattern = [[(.+?):(\d+):(\d+): (.+)]],
-                    groups = { "file", "row", "col", "message" },
-                },
-            }),
-            runtime_condition = function(params)
-                -- Check if .golangci.yml exists in the project root
-                return params.root and vim.fn.filereadable(params.root .. "/.golangci.yml") == 1
-            end,
-        }),
-    }
-
-    -- Setup null-ls with both linters
-    null_ls.setup({
-        sources = {
-            gocritic,
-            golangci_lint,
-        },
-        debug = true,
-        log = {
-            enable = true,
-            level = "trace",
-            use_console = false,
-        },
-    })
 
     -- First register sonarlint configuration with fixed testFilePattern
     require("lspconfig.configs").sonarlint = {
@@ -102,7 +36,7 @@ function M.setup()
                         showVerboseLogs = true,
                     },
                     pathToNodeExecutable = "node",
-                    testFilePattern = "*_test.go", -- Changed from array to string
+                    testFilePattern = "*_test.go",
                     rules = {
                         ["python:S1135"] = {
                             level = "off",
@@ -116,12 +50,11 @@ function M.setup()
         },
     }
 
-    -- Server configurations with enhanced gopls
+    -- Server configurations
     local servers = {
         gopls = {
             settings = {
                 gopls = {
-                    -- Enable comprehensive analysis
                     analyses = {
                         nilness = true,
                         unusedparams = true,
@@ -139,9 +72,8 @@ function M.setup()
                         timeformat = true,
                         shift = true,
                         structtag = true,
-                        ST1013 = true, -- HTTP status code checks
+                        ST1013 = true,
                     },
-                    -- Enable all additional features
                     staticcheck = true,
                     usePlaceholders = true,
                     completeUnimported = true,
@@ -166,7 +98,7 @@ function M.setup()
                         parameterNames = true,
                         rangeVariableTypes = true,
                     },
-                    templateExtensions = {}, -- Should be an array of strings
+                    templateExtensions = {},
                 },
             },
         },
@@ -249,7 +181,7 @@ function M.setup()
         },
     })
 
-    -- Set up diagnostics handler with shorter delay
+    -- Diagnostic handler setup
     local orig_handler = vim.lsp.handlers["textDocument/publishDiagnostics"]
     vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(orig_handler, {
         update_in_insert = false,

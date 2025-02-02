@@ -8,10 +8,10 @@ local function load_config()
     require("config.git").setup()
     require("config.kubectl").setup()
     require("config.formatting").setup()
-    require("config.linting").setup()
     require("config.lsp").setup()
     require("config.completion").setup()
     require("config.editing").setup()
+    require("config.lint").setup()
 end
 
 -- Initialize everything

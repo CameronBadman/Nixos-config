@@ -11,6 +11,12 @@ function M.setup()
         return
     end
 
+    -- Ensure sonarlint directory exists
+    local sonarlint_dir = vim.fn.expand("~/.sonarlint")
+    if vim.fn.isdirectory(sonarlint_dir) == 0 then
+        vim.fn.mkdir(sonarlint_dir, "p")
+    end
+
     -- Register the sonarlint server configuration
     require("lspconfig.configs").sonarlint = {
         default_config = {
@@ -25,6 +31,14 @@ function M.setup()
             },
             root_dir = util.root_pattern(".git", "pyproject.toml", "setup.py", "pom.xml", "package.json", "go.mod"),
             single_file_support = true,
+            before_init = function(initialize_params)
+                initialize_params.initializationOptions = {
+                    telemetryStorage = sonarlint_dir,
+                    productName = "Neovim",
+                    productVersion = vim.version().version,
+                    disableTelemetry = true,
+                }
+            end,
             settings = {
                 sonarlint = {
                     pathToNodeExecutable = "node",
@@ -52,6 +66,8 @@ function M.setup()
                         fullFilePath = true,
                         autoAnalysis = true,
                     },
+                    -- Explicitly disable telemetry
+                    disableTelemetry = true,
                 },
             },
             -- Configure SonarLint specific handlers
@@ -71,7 +87,11 @@ function M.setup()
 
     -- Setup the server with any additional options
     lspconfig.sonarlint.setup({
-        -- You can add any custom settings here if needed
+        -- Add telemetry storage path here as well to ensure it's set
+        init_options = {
+            telemetryStorage = sonarlint_dir,
+            disableTelemetry = true,
+        },
     })
 end
 

@@ -19,7 +19,9 @@
         lua-language-server # Lua language server
         nil # Nix language server
         sonarlint-ls # SonarLint language server
-
+        pylint
+        shellcheck
+        eslint
         # Language Tools & Package Managers
         python311Packages.pip # Python package manager
         luarocks # Lua package manager
