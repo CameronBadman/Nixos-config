@@ -32,6 +32,7 @@ in {
     openssl
     icu
     zlib
+    awscli2
 
     # Computer Vision Dependencies
     pkg-config
