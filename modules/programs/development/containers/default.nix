@@ -14,6 +14,7 @@ in {
     kubernetes-helm
     kubectl
     minikube
+    kubernetes-helm
   ];
 
   # Add your user to the Docker group
