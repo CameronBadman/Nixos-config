@@ -1,154 +1,92 @@
-# neovim.nix
 { pkgs, inputs, ... }: {
   home-manager.users.cameron = {
-    # Global packages that need to be available in PATH
     home.packages = with pkgs; [ golangci-lint ];
-
-    programs.neovim = {
+    programs.nixvim = {
       enable = true;
       defaultEditor = true;
       viAlias = true;
       vimAlias = true;
-
-      # Packages needed by Neovim
+      
+      imports = [ 
+        ./config/lsp 
+        ./nixvim/plugins/neo-tree.nix  
+      ];
+      
       extraPackages = with pkgs; [
-        # Language Servers
-        gopls # Go language server
-        rust-analyzer # Rust language server
-        nodePackages.typescript-language-server # TypeScript/JavaScript language server
-        lua-language-server # Lua language server
-        nil # Nix language server
-        sonarlint-ls # SonarLint language server
-        pylint
-        shellcheck
-        eslint
-        # Language Tools & Package Managers
-        python311Packages.pip # Python package manager
-        luarocks # Lua package manager
-
-        # Code Formatters
-        black # Python formatter
-        stylua # Lua formatter
-        nodePackages.prettier # JavaScript/TypeScript/JSON/YAML/HTML/CSS formatter
-        shfmt # Shell script formatter
-        nixfmt # Nix formatter
-
-        # Linters & Code Quality
-        codespell # Spell checker for code
-
-        # System Tools
-        ripgrep # Fast grep replacement
-        fd # Fast find replacement
-        wl-clipboard # Wayland clipboard utility
-
-        # Kubernetes Tools
-        kubectl # Kubernetes command-line tool
-
-        # C/C++ Tools
-        clang-tools # Includes clang-format
-        cpplint # Google's C++ linter
+        gopls rust-analyzer nodePackages.typescript-language-server
+        lua-language-server nil sonarlint-ls pylint shellcheck eslint
+        python311Packages.pip luarocks black stylua nodePackages.prettier
+        shfmt nixfmt codespell ripgrep fd wl-clipboard kubectl
+        clang-tools cpplint
       ];
 
-      # Neovim Plugins
-      plugins = with pkgs.vimPlugins; [
-        # Package Management
-        lazy-nvim
+      colorschemes.kanagawa = {
+        enable = true;
+        theme = "wave";
+        transparent = true;
+      };
 
-        # Core Plugins
-        plenary-nvim
-        nvim-web-devicons
-        conform-nvim
-        nvim-lint
+      extraPlugins = [
+        (pkgs.vimUtils.buildVimPlugin {
+          name = "kubectl-nvim";
+          src = inputs.kubectl-nvim;
+        })
+      ];
 
-        # LSP Support
-        nvim-lspconfig
-        mason-nvim
-        mason-lspconfig-nvim
-
-        # Completion
-        nvim-cmp
-        cmp-nvim-lsp
-        cmp-buffer
-        cmp-path
-        cmp-cmdline
-        luasnip
-        cmp_luasnip
-        cmp-calc
-
-        # Git Integration
-        gitsigns-nvim
-        vim-fugitive
-
-        # File Navigation and UI
-        telescope-nvim
-        telescope-fzf-native-nvim
-        neo-tree-nvim
-        lualine-nvim
-        vim-visual-multi
-        none-ls-nvim
-        {
-          plugin = pkgs.vimUtils.buildVimPlugin {
-            name = "kubectl-nvim";
-            src = inputs.kubectl-nvim;
+      plugins = {
+        cmp = {
+          enable = true;
+          settings = {
+            snippet.expand = "function(args) require('luasnip').lsp_expand(args.body) end";
+            sources = [
+              { name = "nvim_lsp"; }
+              { name = "luasnip"; }
+              { name = "buffer"; }
+              { name = "path"; }
+              { name = "calc"; }
+            ];
+            mapping = {
+              "<C-d>" = "cmp.mapping.scroll_docs(-4)";
+              "<C-f>" = "cmp.mapping.scroll_docs(4)";
+              "<C-Space>" = "cmp.mapping.complete()";
+              "<C-e>" = "cmp.mapping.close()";
+              "<CR>" = "cmp.mapping.confirm({ select = true })";
+              "<Tab>" = "cmp.mapping(function(fallback) if cmp.visible() then cmp.select_next_item() else fallback() end end, { 'i', 's' })";
+              "<S-Tab>" = "cmp.mapping(function(fallback) if cmp.visible() then cmp.select_prev_item() else fallback() end end, { 'i', 's' })";
+            };
           };
-          type = "lua";
-        }
+        };
 
-        # Theme
-        kanagawa-nvim
+        luasnip.enable = true;
+        cmp-nvim-lsp.enable = true;
+        cmp-buffer.enable = true;
+        cmp-path.enable = true;
+        cmp-calc.enable = true;
+        cmp_luasnip.enable = true;
 
-        # Syntax Highlighting and Languages
-        (nvim-treesitter.withPlugins (plugins:
-          with plugins; [
-            lua
-            python
-            typescript
-            javascript
-            go
-            rust
-            c
-            cpp
-            java
-            json
-            yaml
-            toml
-            html
-            css
-            markdown
-            markdown_inline
-            vim
-            vimdoc
-            query
-          ]))
-      ];
+        treesitter = {
+          enable = true;
+          ensureInstalled = [
+            "lua" "python" "typescript" "javascript" "go" "rust"
+            "c" "cpp" "java" "json" "yaml" "toml" "html" "css"
+            "markdown" "markdown_inline" "vim" "vimdoc" "query"
+          ];
+        };
+      };
 
-      # Lua Configuration
-      extraLuaConfig = ''
+      extraConfigLua = ''
         -- Enable transparency
         vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
         vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
         vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
-
-        -- Kanagawa theme setup with transparency
-        require("kanagawa").setup({
-          theme = "wave",    -- Available themes: wave, dragon, lotus
-          transparent = true -- Enable transparency
-        })
-
-        -- Set colorscheme
-        vim.cmd.colorscheme("kanagawa")
-
-        -- Other configurations
-        require('gitsigns').setup()
         require("config")
       '';
     };
 
-    # Additional configuration files
     xdg.configFile = {
       "nvim/lua/config" = {
         source = ./config;
-        recursive = true; # Copy all files in the directory recursively
+        recursive = true;
       };
     };
   };
