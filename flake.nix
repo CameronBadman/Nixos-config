@@ -1,6 +1,5 @@
 {
   description = "nixos config";
-
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager = {
@@ -15,9 +14,14 @@
       url = "github:Ramilito/kubectl.nvim";
       flake = false;
     };
+    # Add NixVim input
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
-
-  outputs = { self, nixpkgs, home-manager, sops-nix, kubectl-nvim, ... }@inputs:
+  outputs =
+    { self, nixpkgs, home-manager, sops-nix, kubectl-nvim, nixvim, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -35,14 +39,15 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = { inherit inputs; };
+              # Add NixVim module to home-manager
+              home-manager.users.cameron.imports =
+                [ nixvim.homeManagerModules.nixvim ];
             }
             ./users
             sops-nix.nixosModules.sops
           ];
         };
       };
-
-      # Add a default package for `nom build .` to work
       packages.x86_64-linux.default =
         self.nixosConfigurations.nixos.config.system.build.toplevel;
     };
