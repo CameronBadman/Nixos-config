@@ -10,18 +10,23 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    kubectl-nvim = {
-      url = "github:Ramilito/kubectl.nvim";
-      flake = false;
-    };
-    # Add NixVim input
+    # You can remove kubectl-nvim from here since it'll be in your nixvim flake
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Add your nixvim config as an input
+    my-nixvim = {
+      url = "path:/path/to/your/nixvim/config";  # Or git URL if you push it
+    };
   };
-  outputs =
-    { self, nixpkgs, home-manager, sops-nix, kubectl-nvim, nixvim, ... }@inputs:
+  outputs = { self
+    , nixpkgs
+    , home-manager
+    , sops-nix
+    , nixvim
+    , my-nixvim
+    , ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -39,9 +44,12 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = { inherit inputs; };
-              # Add NixVim module to home-manager
-              home-manager.users.cameron.imports =
-                [ nixvim.homeManagerModules.nixvim ];
+              home-manager.users.cameron = {
+                imports = [ 
+                  # Import your nixvim config
+                  my-nixvim.homeManagerModules.default
+                ];
+              };
             }
             ./users
             sops-nix.nixosModules.sops
