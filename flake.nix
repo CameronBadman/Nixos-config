@@ -10,22 +10,20 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # You can remove kubectl-nvim from here since it'll be in your nixvim flake
-    nixvim = {
-      url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
+    nvim-config = {
+      url = "github:CameronBadman/NixVim";
     };
-    # Add your nixvim config as an input
-    my-nixvim = {
-      url = "path:/path/to/your/nixvim/config";  # Or git URL if you push it
+    hyprland = {
+      url = "github:hyprwm/Hyprland/v0.46.2";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
   outputs = { self
     , nixpkgs
     , home-manager
     , sops-nix
-    , nixvim
-    , my-nixvim
+    , nvim-config
+    , hyprland
     , ... }@inputs:
     let
       system = "x86_64-linux";
@@ -39,16 +37,25 @@
             ./configuration.nix
             ./hosts
             ./modules
+            hyprland.nixosModules.default
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = { inherit inputs; };
-              home-manager.users.cameron = {
-                imports = [ 
-                  # Import your nixvim config
-                  my-nixvim.homeManagerModules.default
-                ];
+              home-manager.users.cameron = { pkgs, ... }: {
+                imports = [ ./hosts/hyprland/home.nix ];
+                programs.neovim = {
+                  enable = true;
+                  defaultEditor = true;
+                  viAlias = true;
+                  vimAlias = true;
+                  extraLuaConfig = ''
+                    vim.opt.number = true
+                    vim.opt.relativenumber = true
+                    vim.opt.cursorline = true
+                  '';
+                };
               };
             }
             ./users
