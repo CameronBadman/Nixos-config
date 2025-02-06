@@ -1,8 +1,9 @@
-{ config, lib, pkgs, ... }: {
+{ config, lib, pkgs, inputs, ... }: {
   imports = [ ./config ];
   
   wayland.windowManager.hyprland = {
     enable = true;
+    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
     settings = {
       monitor = [ ",preferred,auto,1" ];
       

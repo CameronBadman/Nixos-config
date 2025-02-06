@@ -91,27 +91,6 @@
         "type": "github"
       }
     },
-    "home-manager_2": {
-      "inputs": {
-        "nixpkgs": [
-          "nvim-config",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1738753876,
-        "narHash": "sha256-yXT82kERWL4R81hfun9BuT478Q6ut0dJzdQjAxjRS38=",
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "rev": "f20b7a8ab527a2482f13754dc00b2deaddc34599",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "type": "github"
-      }
-    },
     "hyprcursor": {
       "inputs": {
         "hyprlang": [
@@ -367,41 +346,6 @@
         "type": "github"
       }
     },
-    "nixpkgs_2": {
-      "locked": {
-        "lastModified": 1738680400,
-        "narHash": "sha256-ooLh+XW8jfa+91F1nhf9OF7qhuA/y1ChLx6lXDNeY5U=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "799ba5bffed04ced7067a91798353d360788b30d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nvim-config": {
-      "inputs": {
-        "home-manager": "home-manager_2",
-        "nixpkgs": "nixpkgs_2"
-      },
-      "locked": {
-        "lastModified": 1738765900,
-        "narHash": "sha256-Zj4DDBfDh4NwsZkvORaoGqXhXqg0Ca+9onD92hHCS6Q=",
-        "owner": "CameronBadman",
-        "repo": "NixVim",
-        "rev": "56f29c93e76181344aad2c5986d15ca49ddb9148",
-        "type": "github"
-      },
-      "original": {
-        "owner": "CameronBadman",
-        "repo": "NixVim",
-        "type": "github"
-      }
-    },
     "pre-commit-hooks": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -431,7 +375,6 @@
         "home-manager": "home-manager",
         "hyprland": "hyprland",
         "nixpkgs": "nixpkgs",
-        "nvim-config": "nvim-config",
         "sops-nix": "sops-nix"
       }
     },
