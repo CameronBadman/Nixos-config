@@ -18,9 +18,15 @@
       url = "github:hyprwm/Hyprland/v0.46.2";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Add your neovim flake
+    nvim-flake = {
+      url = "github:CameronBadman/Nvim-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   
-  outputs = { self, nixpkgs, home-manager, sops-nix, hyprland, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, sops-nix, hyprland, nvim-flake, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -50,33 +56,7 @@
                   imports = [ 
                     ./hosts/hyprland/home.nix 
                   ];
-                  
-                  programs.neovim = {
-                    enable = true;
-                    defaultEditor = true;
-                    viAlias = true;
-                    vimAlias = true;
-                    extraLuaConfig = ''
-                      vim.opt.number = true
-                      vim.opt.relativenumber = true
-                      vim.opt.cursorline = true
-                    '';
-                    plugins = with pkgs.vimPlugins; [
-                      telescope-nvim
-                      plenary-nvim
-                      neo-tree-nvim
-                      nui-nvim
-                      nvim-web-devicons
-                      (nvim-treesitter.withPlugins (plugins: with plugins; [
-                        lua
-                        nix
-                        python
-                        javascript
-                        typescript
-                        rust
-                      ]))
-                    ];
-                  };
+                  home.packages = [ inputs.nvim-flake.packages.${system}.default ];
                 };
               };
             }
