@@ -9,7 +9,6 @@
     historyLimit = 2000;
     plugins = with pkgs.tmuxPlugins; [
       tmux-powerline # Add tmux-powerline plugin
-      resurrect # Add tmux-resurrect plugin
       continuum # Add tmux-continuum plugin
       fzf-tmux-url # Optional: For fzf integration
     ];
@@ -62,18 +61,9 @@
       set -g @powerline-segments-left "session hostname git"
       set -g @powerline-segments-right "pwd date"
 
-      # tmux-resurrect configuration
-      set -g @resurrect-capture-pane-contents 'on' # Save pane contents
-      set -g @resurrect-strategy-vim 'session'     # Restore vim sessions
-      set -g @resurrect-strategy-nvim 'session'    # Restore neovim sessions
-
       # tmux-continuum configuration
       set -g @continuum-restore 'on'               # Enable automatic restore
       set -g @continuum-save-interval '15'         # Save session every 15 minutes
-
-      # Key bindings for tmux-resurrect
-      bind-key S run-shell ${pkgs.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect/scripts/save.sh
-      bind-key R run-shell ${pkgs.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect/scripts/restore.sh
 
       # Key binding to switch between sessions in the background
       bind-key -r s choose-session

@@ -1,9 +1,12 @@
-{ config, lib, pkgs, ... }: {
-  # Set the timezone to Brisbane, Australia
-  time.timeZone = "Australia/Brisbane";
-  # Enable Docker
-  virtualisation.docker.enable = true;
-  # Add your user to the "docker" group
+{ config, lib, pkgs, inputs, ... }: {
+  # Previous configuration remains the same...
+
+  # Add system-wide packages
+  environment.systemPackages = with pkgs; [
+    git
+  ];
+
+  # User configuration
   users.users.cameron = {
     isNormalUser = true;
     extraGroups = [ "wheel" "users" "docker" ];
@@ -12,6 +15,7 @@
     home = "/home/cameron";
     createHome = true;
   };
+
   # Home Manager configuration
   home-manager = {
     useGlobalPkgs = true;
@@ -22,7 +26,19 @@
       fonts.fontconfig.enable = false;
       xdg.enable = false;
 
-      # SSH configuration
+      # Git configuration
+      programs.git = {
+        enable = true;
+        package = pkgs.git;
+        userName = "CameronBadman";  # Replace with your git username
+        userEmail = "cbadwork@gmail.com";  # Replace with your git email
+        extraConfig = {
+          init.defaultBranch = "main";
+          core.editor = "nvim";
+        };
+      };
+
+      # SSH configuration remains the same
       programs.ssh = {
         enable = true;
         matchBlocks = {
@@ -32,9 +48,13 @@
           };
         };
       };
+
+      # Make nvim-flake available
+      home.packages = [ inputs.nvim-flake.packages.${pkgs.system}.default ];
     };
   };
-  # Sudo configuration
+
+  # Sudo configuration remains the same
   security.sudo.extraConfig = ''
     Defaults env_keep += "HOME"
     Defaults env_keep += "XDG_DATA_DIRS"
@@ -44,5 +64,4 @@
     Defaults env_keep += "XDG_DATA_HOME"
     Defaults env_keep += "NEOVIM_STATE_DIR"
   '';
-
 }
