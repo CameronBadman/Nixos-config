@@ -15,6 +15,9 @@ in {
     kubectl
     minikube
     kubernetes-helm
+    k9s
+    cloudlens
+    vscode
   ];
 
   # Add your user to the Docker group

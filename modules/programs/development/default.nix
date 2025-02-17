@@ -4,5 +4,6 @@
     ./terminal
     ./containers
     ./languages
+    ./ide
   ];
 }
