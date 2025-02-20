@@ -64,6 +64,8 @@ in {
     cabal-install
     stack
 
+    dafny
+
     # LSP Servers
     nodePackages.typescript
     nodePackages.typescript-language-server
