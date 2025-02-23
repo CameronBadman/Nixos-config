@@ -23,6 +23,7 @@
     ffmpeg-full
     xxd
     nix-output-monitor
+    superfile
   ];
 
 }
