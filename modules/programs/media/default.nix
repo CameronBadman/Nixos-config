@@ -8,6 +8,7 @@
     pavucontrol
     blueman
     bluetuith
+    zoom-us
     (import ./cider.nix { inherit pkgs lib; })
   ];
 }

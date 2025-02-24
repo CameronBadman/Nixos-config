@@ -372,11 +372,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1740350522,
-        "narHash": "sha256-4GwNLCtK8suquAN/kEmowFXL/9pdFNzkgDKTD8qkatI=",
+        "lastModified": 1740377166,
+        "narHash": "sha256-zgFXikWOt2+Z9t9/4q9Uz0L0EVJOULOTEUwWNwYLfuc=",
         "owner": "CameronBadman",
         "repo": "Nvim-flake",
-        "rev": "b0e25c74d5b133e42f73a1c458fe3b18399e57bd",
+        "rev": "3d8cb3686e5a69f68a38c47980dfa790529b59fb",
         "type": "github"
       },
       "original": {
