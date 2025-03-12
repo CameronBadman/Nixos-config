@@ -1,5 +1,4 @@
 { config, pkgs, lib, ... }:
-
 {
   environment.systemPackages = with pkgs; [
     google-chrome
@@ -9,6 +8,35 @@
     blueman
     bluetuith
     zoom-us
+    wireplumber
+    spotify
+    webcord
     (import ./cider.nix { inherit pkgs lib; })
+    
+    # Add Firefox without using the wrapper
+    firefox
   ];
+  
+  # Set environment variables for better Firefox Wayland support
+  environment.sessionVariables = {
+    MOZ_ENABLE_WAYLAND = "1";
+    MOZ_USE_XINPUT2 = "1";
+  };
+  
+  # Create a Firefox configuration file
+  environment.etc."firefox/policies/policies.json" = {
+    text = builtins.toJSON {
+      policies = {
+        DisableFirefoxStudies = true;
+        DisableTelemetry = true;
+        OverrideFirstRunPage = "";
+        UserMessaging = {
+          WhatsNew = false;
+          ExtensionRecommendations = false;
+          FeatureRecommendations = false;
+        };
+      };
+    };
+    mode = "0644";
+  };
 }

@@ -11,12 +11,12 @@
         margin-bottom = 2;
 
         modules-left = [ "hyprland/workspaces" "hyprland/window" "clock" ];
-        modules-center = [ ];
+        modules-center = [ "mpris" ];
         modules-right = [
           "pulseaudio"
           "network"
           "bluetooth"
-          "cider-launcher"
+          "custom/spotify"
           "cpu"
           "memory"
           "battery"
@@ -36,8 +36,7 @@
         };
 
         clock = {
-          format = " {:%H:%M}";
-          format-alt = " {:%d-%m-%Y}";
+          format = " {:%I:%M %p | %d-%m-%Y}";
           tooltip-format = ''
             <big>{:%Y %B}</big>
             <tt><small>{calendar}</small></tt>'';
@@ -109,10 +108,31 @@
           tooltip = false;
         };
 
-        cider-launcher = {
-          format = "󰎈";
-          on-click = "cider";
+        "custom/spotify" = {
+          format = "󰓇";
+          on-click = "spotify";
           tooltip = false;
+        };
+        
+        mpris = {
+          format = "{player_icon} {dynamic}";
+          format-paused = "{status_icon} {dynamic}";
+          player-icons = {
+            default = "▶";
+            spotify = "󰓇";
+          };
+          status-icons = {
+            paused = "⏸";
+          };
+          dynamic-order = [ "artist" "title" ];
+          dynamic-importance = [ "artist" "title" ];
+          dynamic-len = 40;
+          max-length = 60;
+          on-click = "${pkgs.playerctl}/bin/playerctl play-pause";
+          on-click-right = "${pkgs.playerctl}/bin/playerctl next";
+          on-click-middle = "${pkgs.playerctl}/bin/playerctl previous";
+          on-scroll-up = "${pkgs.playerctl}/bin/playerctl volume 0.05+";
+          on-scroll-down = "${pkgs.playerctl}/bin/playerctl volume 0.05-";
         };
 
         tray = {
@@ -173,14 +193,20 @@
       #network,
       #pulseaudio,
       #bluetooth,
-      #cider-launcher,
-      #tray {
+      #custom-spotify,
+      #tray,
+      #mpris {
         padding: 0 8px;
         margin: 2px 3px;
         color: #cdd6f4;
         border-radius: 6px;
         background: #11111b;
         border: 1px solid rgba(100, 114, 125, 0.1);
+      }
+
+      /* Make the clock module wider to accommodate more text */
+      #clock {
+        min-width: 160px;
       }
 
       #battery.warning {
@@ -204,6 +230,17 @@
       #pulseaudio.muted {
         background: #313244;
         color: #cdd6f4;
+      }
+      
+      /* Spotify module styling */
+      #mpris {
+        padding: 0 8px;
+        margin: 2px 3px;
+        color: #a6e3a1;
+        border-radius: 6px;
+        background: #11111b;
+        border: 1px solid rgba(100, 114, 125, 0.1);
+        min-width: 200px;
       }
 
       tooltip {

@@ -5,6 +5,7 @@ This repository contains my personal NixOS system configuration with a modular s
 ## Initial Setup
 
 1. Enable wpa_supplicant for WiFi:
+
 ```bash
 sudo systemctl enable wpa_supplicant
 ```
@@ -14,6 +15,7 @@ sudo systemctl enable wpa_supplicant
    - Add your SSID and PSK in the appropriate configuration section
 
 ## Directory Structure
+
 ```
 .
 ├── programs/          # Package configurations
@@ -30,11 +32,13 @@ sudo systemctl enable wpa_supplicant
 ## Package Management
 
 ### Adding New Packages
+
 - Navigate to the appropriate directory in `programs/`
 - Add package to the relevant `default.nix` list for default configuration
 - For custom configurations, create a new .nix file (e.g., `neovim.nix`)
 
 ### Updating GitHub-sourced Packages
+
 1. Remove the SHA hash value in the configuration
 2. Replace with empty quotes `""`
 3. Run `nixos-rebuild`
@@ -55,11 +59,13 @@ Hyprland configuration can be found in the `desktop` directory. Customize window
 ## Usage
 
 To rebuild your system after making changes:
+
 ```bash
 sudo nixos-rebuild switch
 ```
 
 For development/testing:
+
 ```bash
 sudo nixos-rebuild test
 ```

@@ -10,6 +10,7 @@ in {
   # Add Docker and related tools to system packages
   environment.systemPackages = with pkgs; [
     docker
+    act
     docker-compose
     kubernetes-helm
     kubectl
