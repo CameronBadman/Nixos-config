@@ -40,21 +40,19 @@
       };
     };
     programs.ssh = {
-      enable = true;
-      matchBlocks = {
-        "github.com" = {
-          identityFile = "~/.ssh/github_key";
-          extraOptions = { AddKeysToAgent = "yes"; };
-        };
-        "moss" = {
-          hostname = "moss.labs.eait.uq.edu.au";
-          user = "sNNNNNNN";  # Replace with actual username
-          addKeysToAgent = true;
-          extraOptions = { UseKeychain = "no"; };
-          identityFile = "~/.ssh/id_ed25519";
-        };
-      };
+  enable = true;
+  matchBlocks = {
+    "github.com" = {
+      identityFile = "~/.ssh/github_key";
+      extraOptions = { AddKeysToAgent = "yes"; };
     };
+    "moss" = {
+      hostname = "moss.labs.eait.uq.edu.au";
+      user = "s4722396";  # Replace with actual username
+      identityFile = "~/.ssh/id_ed25519";
+    };
+  };
+};
     home.packages = [ inputs.nvim-flake.packages.${pkgs.system}.default ];
   };
 }
