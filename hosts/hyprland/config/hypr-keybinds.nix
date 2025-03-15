@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }: {
   wayland.windowManager.hyprland.settings = {
     bind = [
-      "SUPER, Q, exec, ${pkgs.alacritty}/bin/alacritty"
+      "SUPER, Q, exec, ${pkgs.kitty}/bin/kitty"
       "SUPER, W, killactive"
       "SUPER SHIFT, E, exit"
       "SUPER, E, exec, $fileManager"

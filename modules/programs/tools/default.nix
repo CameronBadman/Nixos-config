@@ -24,6 +24,7 @@
     xxd
     nix-output-monitor
     superfile
+    btop
   ];
 
 }
