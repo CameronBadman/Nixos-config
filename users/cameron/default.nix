@@ -21,7 +21,6 @@
       deps = [];
     };
   };
-
   home-manager.users.cameron = { config, pkgs, ... }: {
     home.stateVersion = "23.11";
     fonts.fontconfig.enable = false;
@@ -30,7 +29,6 @@
     
     # Create .cache/gopls directory
     home.file.".cache/gopls/.keep".text = "";
-
     programs.git = {
       enable = true;
       package = pkgs.git;
@@ -41,7 +39,6 @@
         core.editor = "nvim";
       };
     };
-
     programs.ssh = {
       enable = true;
       matchBlocks = {
@@ -49,9 +46,15 @@
           identityFile = "~/.ssh/github_key";
           extraOptions = { AddKeysToAgent = "yes"; };
         };
+        "moss" = {
+          hostname = "moss.labs.eait.uq.edu.au";
+          user = "sNNNNNNN";  # Replace with actual username
+          addKeysToAgent = true;
+          extraOptions = { UseKeychain = "no"; };
+          identityFile = "~/.ssh/id_ed25519";
+        };
       };
     };
-
     home.packages = [ inputs.nvim-flake.packages.${pkgs.system}.default ];
   };
 }
