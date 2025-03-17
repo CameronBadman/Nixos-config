@@ -50,6 +50,10 @@
       hostname = "moss.labs.eait.uq.edu.au";
       user = "s4722396";  # Replace with actual username
       identityFile = "~/.ssh/id_ed25519";
+      setEnv = {
+        TERM = "xterm-256color";
+      };
+      forwardAgent = true;
     };
   };
 };
