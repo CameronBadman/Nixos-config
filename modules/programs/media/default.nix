@@ -13,8 +13,6 @@
     webcord
     (import ./cider.nix { inherit pkgs lib; })
     
-    # Add Firefox without using the wrapper
-    firefox
   ];
   
   # Set environment variables for better Firefox Wayland support

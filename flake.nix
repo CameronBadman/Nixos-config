@@ -2,10 +2,10 @@
   description = "NixOS Configuration";
   
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+   nixpkgs.url = "github:nixos/nixpkgs/e3e32b642a31e6714ec1b712de8c91a3352ce7e1";
     
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/7fb8678716c158642ac42f9ff7a18c0800fea551";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     

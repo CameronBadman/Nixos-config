@@ -25,6 +25,8 @@
     nix-output-monitor
     superfile
     btop
+    filezilla
+    openssh
   ];
 
 }

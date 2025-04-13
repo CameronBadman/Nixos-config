@@ -46,18 +46,17 @@
       identityFile = "~/.ssh/github_key";
       extraOptions = { AddKeysToAgent = "yes"; };
     };
-    "moss" = {
-  hostname = "moss.labs.eait.uq.edu.au";
-  user = "s4722396";
-  identityFile = "~/.ssh/id_ed25519";
-  setEnv = {
-    TERM = "xterm-256color";
-  };
-  forwardAgent = true;
-  forwardX11 = true;  # Add this line
-};
+    moss = {
+      hostname = "moss.labs.eait.uq.edu.au";
+      user = "s4722396";
+      identityFile = "~/.ssh/id_ed25519";
+      extraOptions = {
+        SendEnv = "TERM LC_*";
+      };
+    };
   };
 };
+
     home.packages = [ inputs.nvim-flake.packages.${pkgs.system}.default ];
   };
 }

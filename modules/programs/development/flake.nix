@@ -72,38 +72,6 @@
         specialArgs = { inherit inputs; };
       };
       
-      # Standalone Darwin configuration for testing
-      darwinConfigurations.dev = darwin.lib.darwinSystem {
-        system = "x86_64-darwin"; # Change to aarch64-darwin for Apple Silicon
-        modules = [
-          # Import the development module
-          self.darwinModules.default
-          
-          # Basic configuration for testing
-          ({ pkgs, ... }: {
-            # Use nixpkgs with allowUnfree
-            nixpkgs.config.allowUnfree = true;
-            
-            users.users.cameron = {
-              home = "/Users/cameron";
-              shell = pkgs.zsh;
-            };
-            services.nix-daemon.enable = true;
-            system.stateVersion = 4;
-          })
-          
-          # Home Manager
-          home-manager.darwinModules.home-manager {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.cameron = { ... }: {
-              home.stateVersion = "23.11";
-            };
-          }
-        ];
-        specialArgs = { inherit inputs; };
-      };
-      
       # Development shells for each system
       devShells = forAllSystems (system: {
         default = nixpkgsFor.${system}.mkShell {

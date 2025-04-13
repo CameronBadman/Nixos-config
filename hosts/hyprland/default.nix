@@ -1,5 +1,7 @@
-{ config, lib, pkgs, ... }: {
+{ config, lib, pkgs, inputs ? {}, ... }: {
   imports = [ ./config ];  # Import your Hyprland-specific configs
+  
+  # Your environment variables
   environment = {
     sessionVariables = {
       NIXOS_OZONE_WL = "1";
@@ -12,6 +14,7 @@
       WAYLAND_DISPLAY = "wayland-1";
     };
   };
+  
   # Enable the X11 windowing system
   services.xserver = {
     enable = true;
@@ -20,23 +23,45 @@
       wayland = true;
     };
   };
-  # Enable Hyprland
+  
+  # Enable Hyprland with package from flake input if available
   programs.hyprland = {
     enable = true;
     xwayland.enable = true;
+    # Use package from flake input if available
+    package = lib.mkIf (inputs ? hyprland) inputs.hyprland.packages.${pkgs.system}.hyprland;
+    extraPackages = with pkgs; [ 
+      mesa 
+      libdrm
+      libinput
+      libseat
+      wayland
+      wayland-protocols
+      pixman
+      udev
+      libxkbcommon
+    ];
   };
-  # Enable home-manager
+  
+  # Home-manager configuration
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
   home-manager.users.cameron = import ./home.nix;
-  # Make sure we have these packages available system-wide
+  
+  # Add mesa and related packages to system packages
   environment.systemPackages = with pkgs; [
     waybar
     dunst
     wofi
     alacritty
     dolphin
-    # Add these packages for screen sharing
+    
+    # Graphics and display dependencies
+    mesa
+    mesa.dev  # Development headers containing gbm.pc
+    libdrm
+    
+    # Screen sharing packages
     xdg-desktop-portal
     xdg-desktop-portal-wlr
     xdg-desktop-portal-gtk
@@ -45,7 +70,27 @@
     wl-clipboard
   ];
   
-  # Enhanced XDG portal configuration for screen sharing
+  # Make GBM and related libraries available to the build process
+  nixpkgs.overlays = [
+    (final: prev: {
+      # Fix Aquamarine to find GBM
+      aquamarine = (prev.aquamarine.override {}).overrideAttrs (oldAttrs: {
+        # Add explicit build inputs
+        buildInputs = (oldAttrs.buildInputs or []) ++ [
+          prev.mesa
+          prev.mesa.dev
+          prev.libdrm
+        ];
+        
+        # Set PKG_CONFIG_PATH to help find GBM
+        preConfigure = (oldAttrs.preConfigure or "") + ''
+          export PKG_CONFIG_PATH="${prev.mesa.dev}/lib/pkgconfig:${prev.libdrm}/lib/pkgconfig:$PKG_CONFIG_PATH"
+        '';
+      });
+    })
+  ];
+  
+  # Rest of your configuration...
   xdg.portal = {
     enable = true;
     wlr.enable = true;
@@ -64,10 +109,8 @@
     };
   };
   
-  # Make sure D-Bus is enabled
   services.dbus.enable = true;
   
-  # Ensure PipeWire is properly configured for screen sharing
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -76,6 +119,5 @@
     jack.enable = true;
   };
   
-  # Link XDG portal paths
   environment.pathsToLink = [ "/share/xdg-desktop-portal" ];
 }
