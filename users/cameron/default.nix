@@ -1,7 +1,7 @@
 { config, lib, pkgs, inputs, ... }: {
   users.users.cameron = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "users" "docker" ];
+    extraGroups = [ "wheel" "users" "docker" "networkmanager" "video" "audio" "input" "render" ];
     initialPassword = "temppass";
     shell = pkgs.bash;
     home = "/home/cameron";
@@ -20,44 +20,5 @@
       '';
       deps = [];
     };
-  };
-  home-manager.users.cameron = { config, pkgs, ... }: {
-    home.stateVersion = "23.11";
-    fonts.fontconfig.enable = false;
-    xdg.enable = true;
-    xdg.cacheHome = "/home/cameron/.cache";
-    
-    # Create .cache/gopls directory
-    home.file.".cache/gopls/.keep".text = "";
-    programs.git = {
-      enable = true;
-      package = pkgs.git;
-      userName = "CameronBadman";
-      userEmail = "cbadwork@gmail.com";
-      extraConfig = {
-        init.defaultBranch = "main";
-        core.editor = "nvim";
-      };
-    };
-    programs.ssh = {
-  enable = true;
-  matchBlocks = {
-    "github.com" = {
-      identityFile = "~/.ssh/github_key";
-      extraOptions = { AddKeysToAgent = "yes"; };
-    };
-    "moss" = {
-  hostname = "moss.labs.eait.uq.edu.au";
-  user = "s4722396";
-  identityFile = "~/.ssh/id_ed25519";
-  setEnv = {
-    TERM = "xterm-256color";
-  };
-  forwardAgent = true;
-  forwardX11 = true;  # Add this line
-};
-  };
-};
-    home.packages = [ inputs.nvim-flake.packages.${pkgs.system}.default ];
   };
 }
