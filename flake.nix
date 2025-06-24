@@ -1,11 +1,11 @@
 {
-  description = "NixOS Configuration";
+  description = "Cameron's NixOS Configuration";
   
   inputs = {
-   nixpkgs.url = "github:nixos/nixpkgs/e3e32b642a31e6714ec1b712de8c91a3352ce7e1";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     
     home-manager = {
-      url = "github:nix-community/home-manager/7fb8678716c158642ac42f9ff7a18c0800fea551";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     
@@ -14,63 +14,58 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     
-    hyprland = {
-      url = "github:hyprwm/Hyprland/v0.46.2";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Add your neovim flake
+    # REMOVED hyprland flake input - will use nixpkgs version instead
+    
     nvim-flake = {
       url = "github:CameronBadman/Nvim-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    
+    # Local flakes
+    desktop = {
+      url = "path:./flakes/desktop";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    
+    users = {
+      url = "path:./flakes/users";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
+    
+    hardware = {
+      url = "path:./flakes/hardware";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   
-  outputs = { self, nixpkgs, home-manager, sops-nix, hyprland, nvim-flake, ... }@inputs:
-    let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-    in {
-      nixosConfigurations = {
-        nixos = nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = { inherit inputs self; };
+  outputs = { self, nixpkgs, home-manager, sops-nix, nvim-flake, desktop, users, hardware, ... }@inputs: {
+    nixosConfigurations = {
+      nixos = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs self; };
+        
+        modules = [
+          # Allow unfree packages
+          { nixpkgs.config.allowUnfree = true; }
           
-          modules = [
-            ./configuration.nix
-            ./hosts
-            ./modules
-            
-            # Hyprland module
-            hyprland.nixosModules.default
-            
-            # Home Manager module
-            home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                extraSpecialArgs = { inherit inputs; };
-                
-                users.cameron = { pkgs, ... }: {
-                  imports = [ 
-                    ./hosts/hyprland/home.nix 
-                  ];
-                  home.packages = [ inputs.nvim-flake.packages.${system}.default ];
-                };
-              };
-            }
-            
-            ./users
-            
-            # SOPS Nix module for secrets management
-            sops-nix.nixosModules.sops
-          ];
-        };
+          # Hardware and base configuration
+          ./hardware-configuration.nix
+          ./configuration.nix
+          
+          # Feature modules
+          desktop.nixosModules.default
+          hardware.nixosModules.default
+          # REMOVED hyprland.nixosModules.default - using nixpkgs instead
+          
+          # User configuration
+          home-manager.nixosModules.home-manager
+          users.nixosModules.default
+          
+          # Secrets
+          sops-nix.nixosModules.sops
+        ];
       };
-      
-      # Default package for the system
-      packages.${system}.default = 
-        self.nixosConfigurations.nixos.config.system.build.toplevel;
     };
+  };
 }
