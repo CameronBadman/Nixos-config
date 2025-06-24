@@ -1,3 +1,3 @@
 { config, lib, pkgs, ... }: {
-  imports = [ ./core ./desktop ./hardware ./programs ];
+  imports = [ ./core ./desktop ./programs ];
 }

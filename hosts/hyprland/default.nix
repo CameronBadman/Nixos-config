@@ -30,6 +30,7 @@
     xwayland.enable = true;
     # Use package from flake input if available
     package = lib.mkIf (inputs ? hyprland) inputs.hyprland.packages.${pkgs.system}.hyprland;
+    portalPackage = pkgs.xdg-desktop-portal-hyprland;
     extraPackages = with pkgs; [ 
       mesa 
       libdrm
@@ -90,7 +91,6 @@
     })
   ];
   
-  # Rest of your configuration...
   xdg.portal = {
     enable = true;
     wlr.enable = true;
@@ -98,15 +98,6 @@
       xdg-desktop-portal-wlr
       xdg-desktop-portal-gtk
     ];
-    config = {
-      common = {
-        default = "*";
-      };
-      preferred = {
-        "org.freedesktop.impl.portal.ScreenCast" = "wlr";
-        "org.freedesktop.impl.portal.Screenshot" = "wlr";
-      };
-    };
   };
   
   services.dbus.enable = true;

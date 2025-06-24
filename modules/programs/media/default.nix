@@ -1,6 +1,10 @@
 { config, pkgs, lib, ... }:
 {
   environment.systemPackages = with pkgs; [
+    xdg-desktop-portal
+    xdg-desktop-portal-wlr
+    xdg-desktop-portal-gtk
+    xdg-utils
     google-chrome
     vesktop
     playerctl

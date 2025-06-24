@@ -11,27 +11,6 @@
       enable = true;
       
       # Shell aliases
-      shellAliases = {
-        ls = "ls --color=auto";
-        ll = "ls -l";
-        la = "ls -la";
-        grep = "grep --color=auto";
-        cp = "cp -i";
-        mv = "mv -i";
-        rm = "rm -i";
-        # Git shortcuts
-        g = "git";
-        gs = "git status";
-        ga = "git add";
-        gc = "git commit";
-        gp = "git push";
-        gl = "git pull";
-        gd = "git diff";
-        gco = "git checkout";
-        gb = "git branch";
-        glog = "git log --oneline --graph --decorate";
-      };
-      
       # History configuration
       historyControl = ["ignoredups" "ignorespace"];
       historyFileSize = 20000;
