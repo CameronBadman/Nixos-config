@@ -41,6 +41,7 @@
     # Image tools
     feh               # Image viewer
     imagemagick       # Image manipulation
+    ffmpeg
     
     # System utilities
     brightnessctl     # Brightness control

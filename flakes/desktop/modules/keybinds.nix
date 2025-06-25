@@ -16,7 +16,7 @@
     $mainMod = SUPER
     # Basic window management
     bind = $mainMod, Q, exec, kitty
-    bind = $mainMod, C, killactive,
+    bind = $mainMod, W, killactive,
     bind = $mainMod, M, exit,
     bind = $mainMod, E, exec, nautilus
     bind = $mainMod, V, togglefloating,

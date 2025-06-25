@@ -12,7 +12,7 @@
     exec-once = waybar &
   '';
 
-  # Complete waybar config with all modules including temperature
+  # Complete waybar config with FIXED workspace handling
   environment.etc."xdg/waybar/config".text = builtins.toJSON {
     layer = "top";
     position = "top";
@@ -35,27 +35,24 @@
       "bluetooth"
       "cpu"
       "memory"
-      "temperature"  # Temperature module is here!
+      "temperature"
       "battery"
       "tray"
     ];
 
     "hyprland/workspaces" = {
       disable-scroll = false;
-      all-outputs = true;
+      all-outputs = false;  # CHANGED: Only show workspaces for current monitor
       format = "{id}";
       sort-by-number = true;
       active-only = false;
       on-click = "activate";
-      persistent-workspaces = {
-        "HDMI-A-1" = [ 1 2 3 4 5 ];
-        "DP-1" = [ 6 7 8 9 10 ];
-      };
+      # REMOVED persistent-workspaces - let Hyprland handle it
     };
 
     "hyprland/window" = {
       max-length = 60;
-      separate-outputs = false;
+      separate-outputs = true;  # CHANGED: Separate window titles per monitor
       rewrite = {
         "(.*) — Mozilla Firefox" = " $1";
         "(.*) - Google Chrome" = " $1";

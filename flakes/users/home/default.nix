@@ -16,6 +16,7 @@
       
       # Media
       discord
+      legcord
       
       # Office/productivity 
       obsidian
@@ -32,6 +33,7 @@
       # Communication
       slack
       zoom-us
+
     ];
     
     # Session variables
