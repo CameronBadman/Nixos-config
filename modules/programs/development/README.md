@@ -1,1 +1,0 @@
-# Nix-development-env
