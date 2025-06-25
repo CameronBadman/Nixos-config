@@ -14,8 +14,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     
-    # REMOVED hyprland flake input - will use nixpkgs version instead
-    
     nvim-flake = {
       url = "github:CameronBadman/Nvim-flake";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -58,6 +56,12 @@
           hardware.nixosModules.default
           # REMOVED hyprland.nixosModules.default - using nixpkgs instead
           
+          # Custom Neovim
+          { environment.systemPackages = [
+            inputs.nvim-flake.packages.x86_64-linux.default
+            inputs.nvim-flake.packages.x86_64-linux.devPackages
+          ]; }
+
           # User configuration
           home-manager.nixosModules.home-manager
           users.nixosModules.default

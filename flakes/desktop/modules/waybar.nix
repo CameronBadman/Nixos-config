@@ -1,6 +1,6 @@
 # flakes/desktop/modules/waybar.nix
 { config, lib, pkgs, ... }: {
-  # Install waybar
+  # Install waybar and dependencies
   environment.systemPackages = with pkgs; [
     waybar
     playerctl  # For media controls
@@ -12,7 +12,7 @@
     exec-once = waybar &
   '';
 
-  # Enhanced waybar config combining both versions
+  # Complete waybar config with all modules including temperature
   environment.etc."xdg/waybar/config".text = builtins.toJSON {
     layer = "top";
     position = "top";
@@ -35,7 +35,7 @@
       "bluetooth"
       "cpu"
       "memory"
-      "temperature"
+      "temperature"  # Temperature module is here!
       "battery"
       "tray"
     ];
@@ -93,12 +93,18 @@
       tooltip-format = "{used:0.1f}GB used";
     };
 
+    # Temperature module - flexible configuration
     temperature = {
-      thermal-zone = 2;
-      hwmon-path = "/sys/class/hwmon/hwmon1/temp1_input";
+      # Try thermal zone first (most compatible)
+      thermal-zone = 0;
+      # Fallback hwmon paths - comment out if thermal-zone works
+      # hwmon-path = "/sys/class/hwmon/hwmon1/temp1_input";
       critical-threshold = 80;
       format-critical = " {temperatureC}°C";
       format = " {temperatureC}°C";
+      interval = 2;
+      tooltip = true;
+      tooltip-format = "CPU Temperature: {temperatureC}°C";
     };
 
     battery = {
@@ -110,6 +116,7 @@
         warning = 30;
         critical = 15;
       };
+      interval = 30;
     };
 
     network = {
@@ -119,6 +126,7 @@
       format-linked = "{ifname} (No IP)";
       format-disconnected = "󰖪 Disconnected";
       format-alt = "{ifname}: {ipaddr}/{cidr}";
+      interval = 5;
     };
 
     pulseaudio = {
@@ -146,8 +154,9 @@
       format = "󰂯";
       format-disabled = "󰂲";
       format-off = "󰂲";
+      format-connected = "󰂱 {num_connections}";
       on-click = "blueman-manager";
-      tooltip = false;
+      tooltip-format = "{status}";
     };
 
     idle_inhibitor = {
@@ -156,6 +165,8 @@
         activated = "";
         deactivated = "";
       };
+      tooltip-format-activated = "Idle inhibitor: ON";
+      tooltip-format-deactivated = "Idle inhibitor: OFF";
     };
     
     mpris = {
@@ -165,28 +176,34 @@
         default = "▶";
         spotify = "󰓇";
         firefox = "󰈹";
+        chromium = "";
+        vlc = "󰕼";
       };
       status-icons = {
         paused = "⏸";
+        stopped = "⏹";
       };
       dynamic-order = [ "artist" "title" ];
       dynamic-importance = [ "artist" "title" ];
       dynamic-len = 30;
       max-length = 40;
+      interval = 1;
       on-click = "playerctl play-pause";
       on-click-right = "playerctl next";
       on-click-middle = "playerctl previous";
       on-scroll-up = "playerctl volume 0.05+";
       on-scroll-down = "playerctl volume 0.05-";
+      tooltip-format = "{player}: {artist} - {title}";
     };
 
     tray = {
       icon-size = 16;
       spacing = 5;
+      tooltip = true;
     };
   };
 
-  # Kanagawa-inspired styling with improved functionality
+  # Complete Kanagawa-inspired styling including temperature
   environment.etc."xdg/waybar/style.css".text = ''
     * {
         border: none;
@@ -264,11 +281,19 @@
         border: 1px solid rgba(114, 122, 137, 0.2);
     }
 
-    /* Make the clock module wider */
+    /* Window title styling */
+    #window {
+        background: rgba(147, 153, 178, 0.15);  /* Kanagawa violet tint */
+        border: 1px solid rgba(147, 153, 178, 0.3);
+        min-width: 200px;
+    }
+
+    /* Clock module styling */
     #clock {
         min-width: 180px;
         background: rgba(126, 156, 216, 0.15);  /* Kanagawa blue tint */
         border: 1px solid rgba(126, 156, 216, 0.3);
+        font-weight: bold;
     }
 
     /* CPU styling */
@@ -283,16 +308,18 @@
         border: 1px solid rgba(154, 217, 177, 0.3);
     }
 
-    /* Temperature styling */
+    /* Temperature styling - COMPLETE STYLING */
     #temperature {
         background: rgba(255, 158, 100, 0.15);  /* Kanagawa peach tint */
         border: 1px solid rgba(255, 158, 100, 0.3);
+        font-weight: bold;
     }
 
     #temperature.critical {
         background: #e82424;  /* Kanagawa red */
         color: #dcd7ba;
         animation: blink 1s infinite;
+        font-weight: bold;
     }
 
     /* Battery styling */
@@ -304,18 +331,25 @@
     #battery.warning {
         background: #c0a36e;  /* Kanagawa yellow */
         color: #16161d;
+        font-weight: bold;
     }
 
     #battery.critical {
         background: #e82424;  /* Kanagawa red */
         color: #dcd7ba;
         animation: blink 1s infinite;
+        font-weight: bold;
     }
 
     /* Network styling */
     #network {
         background: rgba(147, 153, 178, 0.15);  /* Kanagawa violet tint */
         border: 1px solid rgba(147, 153, 178, 0.3);
+    }
+
+    #network.disconnected {
+        background: rgba(232, 36, 36, 0.15);  /* Kanagawa red tint */
+        border: 1px solid rgba(232, 36, 36, 0.3);
     }
 
     /* Audio styling */
@@ -338,10 +372,39 @@
         min-width: 200px;
     }
 
+    #mpris.paused {
+        background: rgba(114, 122, 137, 0.15);  /* Kanagawa comment tint */
+        border: 1px solid rgba(114, 122, 137, 0.3);
+    }
+
     /* Bluetooth styling */
     #bluetooth {
         background: rgba(126, 156, 216, 0.15);  /* Kanagawa blue tint */
         border: 1px solid rgba(126, 156, 216, 0.3);
+    }
+
+    #bluetooth.disabled {
+        background: rgba(114, 122, 137, 0.15);  /* Kanagawa comment tint */
+        border: 1px solid rgba(114, 122, 137, 0.3);
+        color: #727169;
+    }
+
+    /* Idle inhibitor styling */
+    #idle_inhibitor {
+        background: rgba(192, 163, 110, 0.15);  /* Kanagawa yellow tint */
+        border: 1px solid rgba(192, 163, 110, 0.3);
+    }
+
+    #idle_inhibitor.activated {
+        background: #c0a36e;  /* Kanagawa yellow */
+        color: #16161d;
+        font-weight: bold;
+    }
+
+    /* Tray styling */
+    #tray {
+        background: rgba(54, 54, 68, 0.8);  /* Kanagawa surface */
+        border: 1px solid rgba(114, 122, 137, 0.2);
     }
 
     @keyframes blink {
@@ -360,6 +423,7 @@
     tooltip label {
         color: #dcd7ba;  /* Kanagawa foreground */
         padding: 6px;
+        font-size: 11px;
     }
   '';
 }
