@@ -7,6 +7,7 @@
     htop
     neofetch
     lm_sensors
+    awscli2
     
     # File utilities
     tree

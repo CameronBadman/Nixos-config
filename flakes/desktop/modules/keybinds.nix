@@ -4,7 +4,11 @@
     # Input configuration
     input {
       kb_layout = us
-      kb_options = ctrl:swapcaps
+      kb_variant = 
+      kb_model = 
+      kb_options = caps:ctrl_modifier
+      kb_rules = 
+      
       follow_mouse = 1
       touchpad {
         natural_scroll = true

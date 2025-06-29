@@ -2,26 +2,23 @@
 { config, lib, pkgs, ... }: {
   environment.etc."hypr/conf.d/graphical-settings.conf".text = ''
     # Environment variables for cursor and rendering
-    env = WLR_NO_HARDWARE_CURSORS,1
     env = NIXOS_OZONE_WL,1
-    env = WLR_DRM_NO_MODIFIERS,1
     env = XCURSOR_SIZE,24
-    env = WLR_RENDERER,vulkan
-    env = WLR_DRM_NO_ATOMIC,1
-
+    env = WLR_RENDERER,gles2
+    
     # Monitor configuration
     monitor = eDP-1,disable
     monitor = HDMI-A-1,2560x1440@144,0x0,1
     monitor = DP-1,2560x1440@144,2560x0,1
-
+    
     # Hyprland misc settings
     misc {
         disable_hyprland_logo = true
         disable_splash_rendering = true
         mouse_move_enables_dpms = true
-        vrr = 0
+        vrr = 1
         force_default_wallpaper = 0
-        vfr = false
+        vfr = true
     }
     
     # Cursor configuration for multi-monitor
@@ -35,7 +32,7 @@
         enable_hyprcursor = false
         default_monitor = HDMI-A-1
     }
-
+    
     # Input configuration
     input {
         kb_layout = us
@@ -50,20 +47,20 @@
             tap-to-click = true
         }
     }
-
+    
     # Per-device configurations for external mice
     device {
         name = logitech-usb-receiver
         sensitivity = 0
         accel_profile = flat
     }
-
+    
     device {
         name = keychron-k10-pro-mouse
         sensitivity = 0
         accel_profile = flat
     }
-
+    
     # Window management
     general {
         gaps_in = 5
@@ -74,12 +71,12 @@
         layout = dwindle
         allow_tearing = false
     }
-
+    
     # Decorations
     decoration {
         rounding = 5
     }
-
+    
     # Animations
     animations {
         enabled = true
@@ -89,7 +86,7 @@
         animation = fade, 1, 7, default
         animation = workspaces, 1, 6, default
     }
-
+    
     # Layout
     dwindle {
         pseudotile = true

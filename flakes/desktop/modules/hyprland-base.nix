@@ -60,7 +60,7 @@
       };
     };
   };
-
+  
   # Hyprland essentials
   environment.systemPackages = with pkgs; [
     polkit_gnome
@@ -68,21 +68,34 @@
     vanilla-dmz
     numix-cursor-theme
   ];
+  
+  # Create a systemd service to set up the Hyprland config in the right location
+  systemd.user.services.setup-hyprland-config = {
+    description = "Setup Hyprland configuration";
+    wantedBy = [ "default.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      # Create config directory
+      mkdir -p $HOME/.config/hypr
+      
+      # Create main config that sources from /etc
+      cat > $HOME/.config/hypr/hyprland.conf << 'EOF'
+# Main Hyprland configuration file
+# This file sources all modular configuration files
 
-  # Main Hyprland configuration file that sources all modules
-  environment.etc."hypr/hyprland.conf".text = ''
-    # Main Hyprland configuration file
-    # This file sources all modular configuration files
-    
-    # Source all configuration modules
-    source = /etc/hypr/conf.d/graphical-settings.conf
-    source = /etc/hypr/conf.d/keybinds.conf
-    source = /etc/hypr/conf.d/workspaces.conf
-    source = /etc/hypr/conf.d/window-rules.conf
-    source = /etc/hypr/conf.d/waybar.conf
-    source = /etc/hypr/conf.d/dunst.conf
-    source = /etc/hypr/conf.d/swww.conf
-    
-    # Any additional global settings can go here
-  '';
+# Source all configuration modules
+source = /etc/hypr/conf.d/graphical-settings.conf
+source = /etc/hypr/conf.d/keybinds.conf
+source = /etc/hypr/conf.d/workspaces.conf
+source = /etc/hypr/conf.d/window-rules.conf
+source = /etc/hypr/conf.d/waybar.conf
+source = /etc/hypr/conf.d/dunst.conf
+source = /etc/hypr/conf.d/swww.conf
+
+EOF
+    '';
+  };
 }
