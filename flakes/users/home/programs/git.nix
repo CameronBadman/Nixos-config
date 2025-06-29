@@ -54,4 +54,19 @@
       prompt = "enabled";
     };
   };
+
+
+  programs.ssh = {
+    enable = true;
+    matchBlocks = {
+      "github.com" = {
+        hostname = "github.com";
+        user = "git";
+        identityFile = "~/.ssh/id_ed25519_github";  # or whatever your key is named
+      };
+    };
+  };
 }
+
+
+
