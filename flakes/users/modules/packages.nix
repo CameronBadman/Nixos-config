@@ -19,7 +19,7 @@
     unzip
     zip
     p7zip
-    
+
     # Network tools
     wget
     curl
@@ -53,6 +53,10 @@
     wl-clipboard     # Clipboard
     grim             # Screenshots
     slurp            # Screen selection
+
+    # minecraft
+    prismlauncher 
+    
     
     # File managers
     nautilus         # GUI file manager

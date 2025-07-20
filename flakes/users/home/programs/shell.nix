@@ -3,44 +3,6 @@
   programs.bash = {
     enable = true;
     
-    # Aliases
-    shellAliases = {
-      # Navigation
-      ll = "ls -alF";
-      la = "ls -A";
-      l = "ls -CF";
-      ".." = "cd ..";
-      "..." = "cd ../..";
-      
-      # Git shortcuts
-      g = "git";
-      gs = "git status";
-      ga = "git add";
-      gc = "git commit";
-      gp = "git push";
-      gl = "git pull";
-      
-      # System
-      grep = "grep --color=auto";
-      fgrep = "fgrep --color=auto";
-      egrep = "egrep --color=auto";
-      
-      # Modern alternatives
-      cat = "bat";
-      ls = "eza";
-      find = "fd";
-      
-      # Nix shortcuts
-      nrs = "sudo nixos-rebuild switch --flake .";
-      nrt = "sudo nixos-rebuild test --flake .";
-      hms = "home-manager switch --flake .";
-      
-      # Tmux
-      tm = "tmux";
-      tma = "tmux attach";
-      tmn = "tmux new-session";
-    };
-    
     # Custom prompt
     bashrcExtra = ''
       # Kanagawa-inspired prompt
