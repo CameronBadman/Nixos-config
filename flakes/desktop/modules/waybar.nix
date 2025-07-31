@@ -4,6 +4,7 @@
   environment.systemPackages = with pkgs; [
     waybar
     playerctl  # For media controls
+    jq         # For JSON processing in custom scripts
   ];
 
   # Waybar configuration
@@ -12,7 +13,69 @@
     exec-once = waybar &
   '';
 
-  # Complete waybar config with FIXED workspace handling
+  # Custom scripts for application status
+  environment.etc."waybar/scripts/spotify-status.sh" = {
+    text = ''
+      #!/bin/sh
+      if pgrep -x "spotify" > /dev/null; then
+        echo '{"text": "󰓇", "class": "running", "tooltip": "Spotify is running - Click to focus"}'
+      else
+        echo '{"text": "󰓇", "class": "stopped", "tooltip": "Spotify is not running - Click to launch"}'
+      fi
+    '';
+    mode = "0755";
+  };
+
+  environment.etc."waybar/scripts/discord-status.sh" = {
+    text = ''
+      #!/bin/sh
+      if pgrep -x "legcord" > /dev/null; then
+        # Try to get notification count from window title
+        TITLE=$(hyprctl clients -j | jq -r '.[] | select(.class=="legcord") | .title' 2>/dev/null)
+        
+        if echo "$TITLE" | grep -q "([0-9]\+)"; then
+          # Extract number from title like "Legcord (3)"
+          COUNT=$(echo "$TITLE" | sed -n 's/.*(\([0-9]\+\)).*/\1/p')
+          echo "{\"text\": \"󰙯 $COUNT\", \"class\": \"running notifications\", \"tooltip\": \"Legcord: $COUNT unread messages\"}"
+        else
+          echo '{"text": "󰙯", "class": "running", "tooltip": "Legcord is running - Click to focus"}'
+        fi
+      else
+        echo '{"text": "󰙯", "class": "stopped", "tooltip": "Legcord is not running - Click to launch"}'
+      fi
+    '';
+    mode = "0755";
+  };
+
+  environment.etc."waybar/scripts/spotify-toggle.sh" = {
+    text = ''
+      #!/bin/sh
+      if pgrep -x "spotify" > /dev/null; then
+        # Focus Spotify window if running
+        hyprctl dispatch focuswindow "class:Spotify"
+      else
+        # Launch Spotify if not running
+        spotify &
+      fi
+    '';
+    mode = "0755";
+  };
+
+  environment.etc."waybar/scripts/discord-toggle.sh" = {
+    text = ''
+      #!/bin/sh
+      if pgrep -x "legcord" > /dev/null; then
+        # Focus Legcord window if running
+        hyprctl dispatch focuswindow "class:legcord"
+      else
+        # Launch Legcord if not running
+        legcord &
+      fi
+    '';
+    mode = "0755";
+  };
+
+  # Complete waybar config with FIXED workspace handling + Spotify/Discord integration
   environment.etc."xdg/waybar/config".text = builtins.toJSON {
     layer = "top";
     position = "top";
@@ -28,6 +91,8 @@
     modules-left = [ "hyprland/workspaces" "hyprland/window" ];
     modules-center = [ "clock" ];
     modules-right = [
+      "custom/spotify"
+      "custom/discord"
       "mpris"
       "idle_inhibitor"
       "pulseaudio"
@@ -54,11 +119,31 @@
       max-length = 60;
       separate-outputs = true;  # CHANGED: Separate window titles per monitor
       rewrite = {
-        "(.*) — Mozilla Firefox" = " $1";
         "(.*) - Google Chrome" = " $1";
-        "(.*) - Visual Studio Code" = "󰨞 $1";
+        "nvim (.*)" = " $1";
         "(.*) - Spotify" = "󰓇 $1";
+        "(.*) - Legcord" = "󰙯 $1";
       };
+    };
+
+    # Custom Spotify module
+    "custom/spotify" = {
+      format = "{}";
+      return-type = "json";
+      exec = "/etc/waybar/scripts/spotify-status.sh";
+      on-click = "/etc/waybar/scripts/spotify-toggle.sh";
+      interval = 5;
+      tooltip = true;
+    };
+
+    # Custom Discord module  
+    "custom/discord" = {
+      format = "{}";
+      return-type = "json";
+      exec = "/etc/waybar/scripts/discord-status.sh";
+      on-click = "/etc/waybar/scripts/discord-toggle.sh";
+      interval = 5;
+      tooltip = true;
     };
 
     clock = {
@@ -200,7 +285,7 @@
     };
   };
 
-  # Complete Kanagawa-inspired styling including temperature
+  # Complete Kanagawa-inspired styling including temperature + Spotify/Discord
   environment.etc."xdg/waybar/style.css".text = ''
     * {
         border: none;
@@ -269,13 +354,77 @@
     #bluetooth,
     #idle_inhibitor,
     #tray,
-    #mpris {
+    #mpris,
+    #custom-spotify,
+    #custom-discord {
         padding: 0 10px;
         margin: 2px 4px;
         color: #dcd7ba;  /* Kanagawa foreground */
         border-radius: 8px;
         background: rgba(54, 54, 68, 0.8);  /* Kanagawa surface */
         border: 1px solid rgba(114, 122, 137, 0.2);
+    }
+
+    /* Spotify integration styling */
+    #custom-spotify {
+        background: rgba(30, 215, 96, 0.15);  /* Spotify green tint */
+        border: 1px solid rgba(30, 215, 96, 0.3);
+        font-size: 14px;
+        min-width: 25px;
+        padding: 0 8px;
+    }
+
+    #custom-spotify.running {
+        background: rgba(30, 215, 96, 0.25);  /* More opaque when running */
+        border: 1px solid rgba(30, 215, 96, 0.5);
+        color: #1ed760;  /* Spotify green */
+        font-weight: bold;
+    }
+
+    #custom-spotify.stopped {
+        background: rgba(114, 122, 137, 0.15);  /* Kanagawa comment tint */
+        border: 1px solid rgba(114, 122, 137, 0.3);
+        color: #727169;  /* Muted color when stopped */
+    }
+
+    #custom-spotify:hover {
+        background: rgba(30, 215, 96, 0.3);
+        color: #1ed760;
+    }
+
+    /* Discord integration styling */
+    #custom-discord {
+        background: rgba(88, 101, 242, 0.15);  /* Discord blurple tint */
+        border: 1px solid rgba(88, 101, 242, 0.3);
+        font-size: 14px;
+        min-width: 25px;
+        padding: 0 8px;
+    }
+
+    #custom-discord.running {
+        background: rgba(88, 101, 242, 0.25);  /* More opaque when running */
+        border: 1px solid rgba(88, 101, 242, 0.5);
+        color: #5865f2;  /* Discord blurple */
+        font-weight: bold;
+    }
+
+    #custom-discord.notifications {
+        background: rgba(232, 36, 36, 0.3);  /* Red background for notifications */
+        border: 1px solid rgba(232, 36, 36, 0.6);
+        color: #e82424;  /* Kanagawa red */
+        font-weight: bold;
+        animation: pulse 2s infinite;
+    }
+
+    #custom-discord.stopped {
+        background: rgba(114, 122, 137, 0.15);  /* Kanagawa comment tint */
+        border: 1px solid rgba(114, 122, 137, 0.3);
+        color: #727169;  /* Muted color when stopped */
+    }
+
+    #custom-discord:hover {
+        background: rgba(88, 101, 242, 0.3);
+        color: #5865f2;
     }
 
     /* Window title styling */
@@ -405,9 +554,26 @@
     }
 
     @keyframes blink {
-        to {
-            background: transparent;
-            color: #dcd7ba;
+        0% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.3;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @keyframes pulse {
+        0% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.7;
+        }
+        100% {
+            opacity: 1;
         }
     }
 

@@ -1,54 +1,33 @@
 { config, lib, pkgs, ... }:
 {
-  sops.secrets."wireless/home/WIFI_SSID" = {
-    owner = "root";
-    group = "root";
-    mode = "0400";
-  };
-  
-  sops.secrets."wireless/home/WIFI_PSK" = {
-    owner = "root";
-    group = "root";
-    mode = "0400";
-  };
-
+  # Clean NetworkManager setup - no secrets in repo
   networking = {
     wireless.enable = false;  # Disable wpa_supplicant
     networkmanager = {
       enable = true;
-      wifi.backend = "iwd"; 
+      wifi.backend = "iwd";
+      # Optional: enable connection sharing
+      # connectionConfig = {
+      #   "connection.permissions" = "user:cameron:;";
+      # };
     };
   };
-
+  
+  # Add user to networkmanager group for GUI/CLI control
   users.users.cameron.extraGroups = [ "networkmanager" ];
   
-  systemd.services.configure-wireless = {
-    description = "Configure wireless networks";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "NetworkManager.service" ];
-    script = ''
-      SSID=$(cat ${config.sops.secrets."wireless/home/WIFI_SSID".path})
-      PSK=$(cat ${config.sops.secrets."wireless/home/WIFI_PSK".path})
-      ${pkgs.networkmanager}/bin/nmcli connection add \
-        type wifi \
-        con-name "$SSID" \
-        ifname "*" \
-        ssid "$SSID" \
-        wifi-sec.key-mgmt wpa-psk \
-        wifi-sec.psk "$PSK"
-    '';
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-  };
-
-  # Fixed portal configuration
-  services.dbus.enable = true;  # Keep this!
+  # Optional: Install GUI tools for easier network management
+  environment.systemPackages = with pkgs; [
+    networkmanagerapplet  # nm-applet for system tray
+    # nmtui                # TUI interface (alternative to GUI)
+  ];
+  
+  # Portal configuration (keeping your existing setup)
+  services.dbus.enable = true;
   services.dbus.packages = with pkgs; [
     xdg-desktop-portal
     xdg-desktop-portal-gtk
-    xdg-desktop-portal-hyprland  # Match with extraPortals
+    xdg-desktop-portal-hyprland
   ];
   
   services.upower.enable = true;
@@ -56,7 +35,7 @@
   xdg.portal = {
     enable = true;
     extraPortals = with pkgs; [
-      xdg-desktop-portal-hyprland  # Now matches dbus.packages
+      xdg-desktop-portal-hyprland
       xdg-desktop-portal-gtk
     ];
     config = {

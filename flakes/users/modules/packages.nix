@@ -8,13 +8,13 @@
     neofetch
     lm_sensors
     awscli2
-    
+
     # File utilities
     tree
     fd
     ripgrep
     fzf
-    
+
     # Archive tools
     unzip
     zip
@@ -23,50 +23,49 @@
     # Network tools
     wget
     curl
-    
+
     # Hardware utilities
     usbutils
     pciutils
     lshw
     lsof
-    
+
     # Document and office tools
     texliveFull        # LaTeX
-    pandoc            # Document converter
-    libreoffice       # Office suite
-    
+    pandoc             # Document converter
+    libreoffice        # Office suite
+
     # Media tools
     vlc
     spotify
-    
-    # Image tools
-    feh               # Image viewer
-    imagemagick       # Image manipulation
-    ffmpeg
-    
-    # System utilities
-    brightnessctl     # Brightness control
-    pamixer          # Audio control
-    playerctl        # Media control
-    
-    # Wayland utilities
-    wl-clipboard     # Clipboard
-    grim             # Screenshots
-    slurp            # Screen selection
 
-    # minecraft
-    prismlauncher 
-    
-    
+    # Conversions 
+    unoconv 
+
+    # Image tools
+    feh                # Image viewer
+    imagemagick        # Image manipulation
+    ffmpeg
+
+    # System utilities
+    brightnessctl      # Brightness control
+    pamixer            # Audio control
+    playerctl          # Media control
+
+    # Wayland utilities
+    wl-clipboard       # Clipboard
+    grim               # Screenshots
+    slurp              # Screen selection
+
     # File managers
-    nautilus         # GUI file manager
-    
+    nautilus           # GUI file manager
+
     # Network manager
     networkmanagerapplet
-    
+
     # Notifications
     libnotify
-    
+
     # Fonts (system-wide)
     noto-fonts
     noto-fonts-cjk-sans
@@ -75,14 +74,14 @@
     fira-code
     fira-code-symbols
   ];
-  
-  # Nerd fonts - updated syntax
+
+  # Nerd fonts - including DevIcons
   fonts.packages = with pkgs; [
     nerd-fonts.fira-code
     nerd-fonts.droid-sans-mono  
     nerd-fonts.jetbrains-mono
   ];
-  
+
   # Font configuration
   fonts.fontconfig = {
     enable = true;

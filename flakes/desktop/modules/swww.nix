@@ -9,13 +9,6 @@
   environment.etc."hypr/conf.d/swww.conf".text = ''
     # Initialize swww daemon (this starts swww-daemon internally)
     exec-once = swww-daemon &
-    exec-once = sleep 3 && swww img ~/Pictures/Wallpapers/background_test.gif --transition-type wipe --transition-duration 2
-    
-    # Fallback to static wallpaper if GIF doesn't exist
-    exec-once = sleep 4 && [ ! -f ~/Pictures/Wallpapers/background_test.gif ] && swww img ~/Pictures/Wallpapers/default.jpg --transition-type fade --transition-duration 1
-    
-    # Optional: Random wallpaper script keybind
-    # bind = SUPER, W, exec, ~/scripts/random-wallpaper.sh
   '';
   
   # Create a wallpaper script that supports GIFs

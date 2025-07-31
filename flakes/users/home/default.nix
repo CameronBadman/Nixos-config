@@ -13,6 +13,7 @@
     packages = with pkgs; [
       # Browsers
       google-chrome  # Your preferred browser
+      texstudio
       
       # Media
       discord
@@ -33,18 +34,36 @@
       # Communication
       slack
       zoom-us
-
     ];
     
     # Session variables
     sessionVariables = {
       TERMINAL = "kitty";
       EDITOR = "nvim";
-      BROWSER = "google-chrome";
-      MOZ_ENABLE_WAYLAND = "1";
+      BROWSER = "zen";  
+      MOZ_ENABLE_WAYLAND = "1";  
       QT_QPA_PLATFORM = "wayland";
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
       SDL_VIDEODRIVER = "wayland";
+    };
+  };
+  
+  # Background app services for faster startup
+  systemd.user.services = {
+    legcord-background = {
+      Unit = {
+        Description = "Start Legcord in background";
+        After = [ "graphical-session.target" ];
+        Wants = [ "graphical-session.target" ];
+      };
+      Service = {
+        ExecStart = "${pkgs.legcord}/bin/legcord --start-minimized";
+        Restart = "no";
+        Type = "forking";
+      };
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
     };
   };
   

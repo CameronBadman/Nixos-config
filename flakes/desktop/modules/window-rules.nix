@@ -1,6 +1,9 @@
 # flakes/desktop/modules/window-rules.nix
 { config, lib, pkgs, ... }: {
   environment.etc."hypr/conf.d/window-rules.conf".text = ''
+    # Monitor assignment - open windows where cursor is located
+    windowrulev2 = monitor:cursor,class:.*
+    
     # Float specific applications
     windowrulev2 = float,class:^(pavucontrol)$
     windowrulev2 = float,class:^(blueman-manager)$
@@ -22,13 +25,9 @@
     # Center floating windows
     windowrulev2 = center,floating:1
     
-    # Workspace assignments
-    windowrulev2 = workspace 1,class:^(firefox)$
-    windowrulev2 = workspace 1,class:^(google-chrome)$
-    windowrulev2 = workspace 2,class:^(code)$
-    windowrulev2 = workspace 2,class:^(nvim)$
-    windowrulev2 = workspace 3,class:^(discord)$
-    windowrulev2 = workspace 3,class:^(slack)$
+    # Workspace assignments (updated for your apps)
+    windowrulev2 = workspace 10,class:^(legcord)$  # Updated for legcord
+    windowrulev2 = workspace 9,class:^(Spotify)$ 
     
     # Opacity rules
     windowrulev2 = opacity 0.9,class:^(kitty)$
@@ -45,6 +44,7 @@
     windowrulev2 = idleinhibit focus,class:^(mpv)$
     windowrulev2 = idleinhibit focus,class:^(firefox)$,title:^(.* - YouTube.*)$
     windowrulev2 = idleinhibit focus,class:^(google-chrome)$,title:^(.* - YouTube.*)$
+    windowrulev2 = idleinhibit focus,class:^(Spotify)$  # Added Spotify idle inhibit
     
     # Hide title bars for specific apps when tiled
     windowrulev2 = noborder,class:^(firefox)$,floating:0
