@@ -1,19 +1,36 @@
 { config, lib, pkgs, ... }: {
-  boot.kernelModules = [ 
-    "typec" 
-    "typec_displayport"
-    "cros_ec_typec"
-  ];
-  
-  services.xserver.videoDrivers = [ "nvidia" "amdgpu" ];
-  
   hardware.nvidia = {
-    open = false;  # Use closed source drivers for GTX 2060 Max-Q
-    # ... your other nvidia settings
+    open = false;  # Stick with proprietary for GTX 2060 Max-Q
+    
+    # Performance-focused power management
+    powerManagement.enable = false;  # Don't need battery optimization
+    
+    # Use the stable driver branch
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    
+    # Force NVIDIA as primary (no switching needed)
+    prime = {
+      sync.enable = true;  # Always use NVIDIA, better performance
+      # Still need bus IDs - get with: lspci | grep -E "VGA|3D"
+      intelBusId = "PCI:0:2:0";    # Replace with actual
+      nvidiaBusId = "PCI:1:0:0";   # Replace with actual
+    };
+    
+    # Performance optimizations
+    forceFullCompositionPipeline = true;
+    modesetting.enable = true;
   };
-  # Udev rules for USB-C
-  services.udev.extraRules = ''
-    # Force DisplayPort Alt Mode detection
-    SUBSYSTEM=="typec", ACTION=="add", RUN+="${pkgs.kmod}/bin/modprobe typec_displayport"
-  '';
+
+  # Modern graphics configuration
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;  # For 32-bit applications
+  };
+
+  # Performance environment variables
+  environment.variables = {
+    __GL_VRR_ALLOWED = "1";
+    __GL_MaxFramesAllowed = "1";
+    __NV_PRIME_RENDER_OFFLOAD = "0";
+  };
 }
