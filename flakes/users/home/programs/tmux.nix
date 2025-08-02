@@ -31,16 +31,13 @@
           set -g @resurrect-save-shell-history 'on'
         '';
       }
-      {
-        plugin = continuum;
-        extraConfig = ''
-          set -g @continuum-restore 'on'
-          set -g @continuum-save-interval '10'
-        '';
-      }
     ];
     
     extraConfig = ''
+      # ===== STATUS LINE POSITION =====
+      # Move status line to top
+      set -g status-position top
+      
       # ===== APPEARANCE =====
       # Muted color scheme to match kitty
       set -g status-bg '#1d1f21'

@@ -62,7 +62,7 @@
       "github.com" = {
         hostname = "github.com";
         user = "git";
-        identityFile = "~/.ssh/id_ed25519_github";  # or whatever your key is named
+        identityFile = "~/.ssh/id_ed25519_github";  
       };
     };
   };

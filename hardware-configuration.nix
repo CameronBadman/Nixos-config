@@ -9,19 +9,34 @@
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "ahci" "usb_storage" "usbhid" "sd_mod" ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-amd" ];
+  boot.kernelModules = [ "kvm-amd" "amdgpu" "typec" "typec_displayport" "ucsi_acpi" "typec_ucsi" ];
+  boot.kernelParams = [ "amdgpu.dc=1" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/ed6ec2b2-d611-4f12-b899-02ba9a50a022";
+    { device = "/dev/disk/by-uuid/81e95a82-ad24-467f-9f95-b8a7eefe83f0";
       fsType = "ext4";
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/9C39-3930";
+    { device = "/dev/disk/by-uuid/48DE-3990";
       fsType = "vfat";
       options = [ "fmask=0022" "dmask=0022" ];
+    };
+
+  fileSystems."/home" =
+    { device = "/dev/disk/by-uuid/2d739fd5-88db-42ac-8007-3c472b11ac5d";
+      fsType = "ext4";
+    };
+
+  fileSystems."/uni" =
+    { device = "/dev/disk/by-uuid/371f0ee7-c015-4796-8ab6-cb11e06e96be";
+      fsType = "ext4";
+    };
+
+  fileSystems."/projects" =
+    { device = "/dev/disk/by-uuid/5d8c10c6-7a55-4b31-9999-84786ce8b6fa";
+      fsType = "ext4";
     };
 
   swapDevices = [ ];

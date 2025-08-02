@@ -1,4 +1,3 @@
-# home/programs/shell.nix - Shell configuration
 { config, lib, pkgs, ... }: {
   programs.bash = {
     enable = true;
@@ -17,6 +16,12 @@
       # Better tab completion
       shopt -s checkwinsize
       shopt -s expand_aliases
+      
+      # SSH Agent auto-start
+      if [ -z "$SSH_AUTH_SOCK" ]; then
+          eval "$(ssh-agent -s)" > /dev/null
+          ssh-add ~/.ssh/id_ed25519 2>/dev/null || ssh-add ~/.ssh/id_rsa 2>/dev/null
+      fi
       
       # FZF settings
       export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'

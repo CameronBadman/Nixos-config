@@ -10,6 +10,13 @@
       # Import the core module (networking stuff)
       imports = [ ./core/default.nix ];
       
+      # Kernel modules for hybrid graphics (AMD + NVIDIA)
+      boot.kernelModules = [ "kvm-amd" "amdgpu" ];
+      boot.initrd.kernelModules = [ "amdgpu" ];
+      
+      # Video drivers for hybrid setup
+      services.xserver.videoDrivers = [ "nvidia" "amdgpu" ];
+      
       # Bluetooth configuration
       hardware.bluetooth = {
         enable = true;
@@ -33,11 +40,19 @@
         bluez-tools
         pavucontrol
       ];
+
+      hardware.enableAllFirmware = true;
       
-      # Hardware-specific optimizations
+      # Enhanced graphics configuration for hybrid setup
       hardware.graphics = {
         enable = true;
         enable32Bit = true;
+        extraPackages = with pkgs; [
+          amdvlk  # AMD Vulkan driver
+        ];
+        extraPackages32 = with pkgs.pkgsi686Linux; [
+          amdvlk  # 32-bit AMD Vulkan
+        ];
       };
       
       # USB and device detection

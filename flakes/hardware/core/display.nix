@@ -1,25 +1,29 @@
 { config, lib, pkgs, ... }: {
   hardware.nvidia = {
-    open = false;  # Stick with proprietary for GTX 2060 Max-Q
-    
-    # Performance-focused power management
-    powerManagement.enable = false;  # Don't need battery optimization
-    
-    # Use the stable driver branch
+    open = false;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
-    
-    # Force NVIDIA as primary (no switching needed)
-    prime = {
-      sync.enable = true;  # Always use NVIDIA, better performance
-      # Still need bus IDs - get with: lspci | grep -E "VGA|3D"
-      intelBusId = "PCI:0:2:0";    # Replace with actual
-      nvidiaBusId = "PCI:1:0:0";   # Replace with actual
-    };
-    
-    # Performance optimizations
-    forceFullCompositionPipeline = true;
     modesetting.enable = true;
+    powerManagement.enable = false;  # Fixed: can't use fine-grained with sync mode
+    
+    prime = {
+      sync.enable = true;      # Required for USB-C DisplayPort
+      offload.enable = false;  # This mode breaks USB-C displays
+      amdgpuBusId = "PCI:4:0:0";  # Matches your AMD GPU
+      nvidiaBusId = "PCI:1:0:0";  # Matches your NVIDIA GPU
+    };
   };
+
+  services.xserver.videoDrivers = [ "nvidia" "amdgpu" ];
+
+  boot.kernelParams = [
+    "nvidia-drm.modeset=1"
+    "amdgpu.dcdebugmask=0x10"
+    "processor.max_cstate=1"
+  ];
+
+  boot.initrd.kernelModules = [
+    "amdgpu" "nvidia" "nvidia-drm" "nvidia-modeset"
+  ];
 
   # Modern graphics configuration
   hardware.graphics = {
@@ -33,4 +37,7 @@
     __GL_MaxFramesAllowed = "1";
     __NV_PRIME_RENDER_OFFLOAD = "0";
   };
+
+  services.asusd.enable = true;
+  services.supergfxd.enable = true;
 }
