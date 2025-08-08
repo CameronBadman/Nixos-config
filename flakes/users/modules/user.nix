@@ -11,6 +11,7 @@
       "video"           # video devices
       "audio"           # audio devices
       "input"           # input devices
+      "bluetooth"
       "render"          # GPU rendering
       "libvirtd"        # virtualization
     ];

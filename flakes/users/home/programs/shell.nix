@@ -1,4 +1,39 @@
 { config, lib, pkgs, ... }: {
+  # Add the pptxConvert script to your PATH
+  home.packages = with pkgs; [
+    libreoffice  # Ensure LibreOffice is available
+    (writeShellScriptBin "pptxConvert" ''
+      #!/bin/bash
+      set -euo pipefail
+      
+      # Check if LibreOffice is available
+      if ! command -v libreoffice &> /dev/null; then
+          echo "Error: LibreOffice not found in PATH"
+          exit 1
+      fi
+      
+      # Check if any PPTX files exist
+      shopt -s nullglob
+      pptx_files=(*.pptx)
+      if [ ''${#pptx_files[@]} -eq 0 ]; then
+          echo "No PPTX files found in current directory"
+          exit 0
+      fi
+      
+      echo "Converting ''${#pptx_files[@]} PPTX file(s) to PDF..."
+      
+      # Convert all PPTX files to PDF
+      for file in *.pptx; do 
+          if [ -f "$file" ]; then
+              echo "Converting: $file"
+              libreoffice --headless --convert-to pdf "$file"
+          fi
+      done
+      
+      echo "Conversion complete!"
+    '')
+  ];
+
   programs.bash = {
     enable = true;
     

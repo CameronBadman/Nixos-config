@@ -1,5 +1,11 @@
 # modules/packages.nix - General tools and utilities
-{ config, lib, pkgs, ... }: {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
   # System-wide packages - general tools only
   environment.systemPackages = with pkgs; [
     # System monitoring and info
@@ -8,64 +14,53 @@
     neofetch
     lm_sensors
     awscli2
-
     # File utilities
     tree
     fd
     ripgrep
     fzf
-
     # Archive tools
     unzip
     zip
     p7zip
-
+    openconnect
+    globalprotect-openconnect # This one is available in nixpkgs!
+    networkmanager-openconnect
     # Network tools
     wget
     curl
-
     # Hardware utilities
     usbutils
     pciutils
     lshw
     lsof
-
     # Document and office tools
-    texliveFull        # LaTeX
-    pandoc             # Document converter
-    libreoffice        # Office suite
-
+    texliveFull # LaTeX
+    pandoc # Document converter
+    libreoffice # Office suite
     # Media tools
     vlc
     spotify
-
-    # Conversions 
-    unoconv 
-
+    # Conversions
+    unoconv
     # Image tools
-    feh                # Image viewer
-    imagemagick        # Image manipulation
+    feh # Image viewer
+    imagemagick # Image manipulation
     ffmpeg
-
     # System utilities
-    brightnessctl      # Brightness control
-    pamixer            # Audio control
-    playerctl          # Media control
-
+    brightnessctl # Brightness control
+    pamixer # Audio control
+    playerctl # Media control
     # Wayland utilities
-    wl-clipboard       # Clipboard
-    grim               # Screenshots
-    slurp              # Screen selection
-
+    wl-clipboard # Clipboard
+    grim # Screenshots
+    slurp # Screen selection
     # File managers
-    nautilus           # GUI file manager
-
+    nautilus # GUI file manager
     # Network manager
     networkmanagerapplet
-
     # Notifications
     libnotify
-
     # Fonts (system-wide)
     noto-fonts
     noto-fonts-cjk-sans
@@ -78,7 +73,7 @@
   # Nerd fonts - including DevIcons
   fonts.packages = with pkgs; [
     nerd-fonts.fira-code
-    nerd-fonts.droid-sans-mono  
+    nerd-fonts.droid-sans-mono
     nerd-fonts.jetbrains-mono
   ];
 
