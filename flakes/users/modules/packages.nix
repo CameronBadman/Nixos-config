@@ -24,20 +24,28 @@
     zip
     p7zip
     openconnect
-    globalprotect-openconnect # This one is available in nixpkgs!
     networkmanager-openconnect
     # Network tools
     wget
     curl
+    anki
     # Hardware utilities
     usbutils
+    vit
     pciutils
     lshw
+    jetbrains.idea-community-bin 
+    jetbrains.idea-ultimate 
     lsof
+    taskwarrior3
     # Document and office tools
     texliveFull # LaTeX
     pandoc # Document converter
     libreoffice # Office suite
+    marp-cli
+
+    #cybersec
+    nmap 
     # Media tools
     vlc
     spotify

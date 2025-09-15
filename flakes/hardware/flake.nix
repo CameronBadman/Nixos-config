@@ -11,24 +11,24 @@
       imports = [ ./core/default.nix ];
       
       # Kernel modules for hybrid graphics (AMD + NVIDIA)
-      boot.kernelModules = [ "kvm-amd" "amdgpu" ];
+      boot.kernelModules = [ "kvm-amd" "amdgpu" "btusb" "btintel" ];
       boot.initrd.kernelModules = [ "amdgpu" ];
       
       # Video drivers for hybrid setup
       services.xserver.videoDrivers = [ "nvidia" "amdgpu" ];
       
-      # Bluetooth configuration
       hardware.bluetooth = {
-  enable = true;
-  powerOnBoot = true;
-  settings = {
-    General = {
-      Enable = "Source,Sink,Media,Socket";
-      Experimental = true;
+      enable = true;
+      powerOnBoot = true;
+      settings = {
+        General = {
+          Experimental = true;
+        };
+      };
     };
-  };
-};
 
+    # Add firmware support
+    hardware.enableRedistributableFirmware = true;
 
     
       services.blueman.enable = true;

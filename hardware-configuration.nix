@@ -9,33 +9,33 @@
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "ahci" "usb_storage" "usbhid" "sd_mod" ];
-  boot.kernelModules = [ "kvm-amd" "amdgpu" "typec" "typec_displayport" "ucsi_acpi" "typec_ucsi" ];
-  boot.kernelParams = [ "amdgpu.dc=1" ];
+  boot.initrd.kernelModules = [ ];
+  boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/81e95a82-ad24-467f-9f95-b8a7eefe83f0";
+    { device = "/dev/disk/by-uuid/b098194e-4b41-465d-8ca9-492287937884";
       fsType = "ext4";
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/48DE-3990";
+    { device = "/dev/disk/by-uuid/F6F0-CB58";
       fsType = "vfat";
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
-  fileSystems."/home" =
-    { device = "/dev/disk/by-uuid/2d739fd5-88db-42ac-8007-3c472b11ac5d";
+  fileSystems."/nix/store" =
+    { device = "/dev/disk/by-uuid/ac678c97-ccaf-45ab-9190-b66aec023b2b";
       fsType = "ext4";
     };
 
-  fileSystems."/uni" =
-    { device = "/dev/disk/by-uuid/371f0ee7-c015-4796-8ab6-cb11e06e96be";
+  fileSystems."/home/uni" =
+    { device = "/dev/disk/by-uuid/50904b42-173d-4684-9ddb-c1fa80bc15c5";
       fsType = "ext4";
     };
 
-  fileSystems."/projects" =
-    { device = "/dev/disk/by-uuid/5d8c10c6-7a55-4b31-9999-84786ce8b6fa";
+  fileSystems."/home/projects" =
+    { device = "/dev/disk/by-uuid/6781c63c-1e9c-4a3d-aa5c-15f529b85575";
       fsType = "ext4";
     };
 
@@ -46,6 +46,7 @@
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
+  # networking.interfaces.enp4s0f4u2u1i5.useDHCP = lib.mkDefault true;
   # networking.interfaces.wlp2s0.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

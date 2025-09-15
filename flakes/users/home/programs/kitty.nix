@@ -12,7 +12,7 @@
       font_size = "11.0";
       
       # Background and opacity - key features!
-      background_opacity = "0.6";
+      background_opacity = "0.5";
       dynamic_background_opacity = "yes";
       
       # Window padding

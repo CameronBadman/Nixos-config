@@ -1,7 +1,8 @@
 # modules/user.nix - User account configuration
 { config, lib, pkgs, ... }: {
   # User configuration
-  users.users.cameron = {
+
+ users.users.cameron = {
     isNormalUser = true;
     extraGroups = [ 
       "wheel"           # sudo access

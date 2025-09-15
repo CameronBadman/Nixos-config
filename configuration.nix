@@ -37,7 +37,7 @@
   slurp
   dunst
   libnotify
-  rofi-wayland
+  rofi
   waybar
   hyprpaper
   networkmanagerapplet

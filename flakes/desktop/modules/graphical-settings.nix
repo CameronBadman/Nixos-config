@@ -8,15 +8,15 @@
     
     # Monitor configuration
     monitor = eDP-1,disable
-    monitor = HDMI-A-1,2560x1440@144,0x0,1
-    monitor = DP-1,2560x1440@144,2560x0,1
+    monitor = HDMI-A-1,2560x1440@143.91,0x0,1
+    monitor = DP-1,2560x1440@143.99,2560x0,1
     
     # Hyprland misc settings
     misc {
         disable_hyprland_logo = true
         disable_splash_rendering = true
         mouse_move_enables_dpms = true
-        vrr = 1
+        vrr = 0
         force_default_wallpaper = 0
         vfr = true
     }

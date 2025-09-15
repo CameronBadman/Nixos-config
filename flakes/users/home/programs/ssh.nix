@@ -33,12 +33,6 @@
           StrictHostKeyChecking = "accept-new";
         };
       };
-
-      # You can add more UQ servers here
-      "uq-*" = {
-        user = "s4723961";
-        identityFile = "~/.ssh/id_ed25519"; # Using your ed25519 key
-      };
     };
 
     # Global SSH settings
