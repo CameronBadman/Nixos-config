@@ -12,7 +12,7 @@
     ./tmux.nix
     ./chrome.nix
     ./shell.nix
-    ./zen.nix
     ./ssh.nix
+    ./firefox.nix
   ];
 }

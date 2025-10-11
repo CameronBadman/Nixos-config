@@ -19,6 +19,10 @@
     fd
     ripgrep
     fzf
+
+    docker 
+    flameshot
+
     # Archive tools
     unzip
     zip
@@ -31,18 +35,24 @@
     anki
     # Hardware utilities
     usbutils
-    vit
     pciutils
     lshw
-    jetbrains.idea-community-bin 
-    jetbrains.idea-ultimate 
     lsof
-    taskwarrior3
     # Document and office tools
     texliveFull # LaTeX
     pandoc # Document converter
     libreoffice # Office suite
     marp-cli
+
+    google-chrome
+    texstudio
+    legcord
+    obsidian
+    gimp
+    bitwarden
+    docker-compose
+    slack
+    zoom-us
 
     #cybersec
     nmap 
@@ -57,14 +67,13 @@
     ffmpeg
     # System utilities
     brightnessctl # Brightness control
-    pamixer # Audio control
     playerctl # Media control
     # Wayland utilities
     wl-clipboard # Clipboard
     grim # Screenshots
     slurp # Screen selection
     # File managers
-    nautilus # GUI file manager
+    gnome.nautilus # GUI file manager
     # Network manager
     networkmanagerapplet
     # Notifications
@@ -78,12 +87,11 @@
     fira-code-symbols
   ];
 
-  # Nerd fonts - including DevIcons
   fonts.packages = with pkgs; [
-    nerd-fonts.fira-code
-    nerd-fonts.droid-sans-mono
-    nerd-fonts.jetbrains-mono
+   (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" "JetBrainsMono" ]; })
   ];
+
+  virtualisation.docker.enable = true;
 
   # Font configuration
   fonts.fontconfig = {

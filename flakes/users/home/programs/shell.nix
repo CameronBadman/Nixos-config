@@ -74,22 +74,6 @@
     '';
   };
   
-  # Modern shell tools
-  programs.eza = {
-    enable = true;
-    enableBashIntegration = true;
-    git = true;
-    icons = "auto";
-  };
-  
-  programs.bat = {
-    enable = true;
-    config = {
-      theme = "OneHalfDark";
-      style = "numbers,changes,header";
-    };
-  };
-  
   programs.fzf = {
     enable = true;
     enableBashIntegration = true;

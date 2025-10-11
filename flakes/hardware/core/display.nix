@@ -13,7 +13,7 @@
     };
   };
 
-  services.xserver.videoDrivers = [ "nvidia" "amdgpu" ];
+  services.xserver.videoDrivers = [ "nvidia" ];
 
   boot.kernelParams = [
     "nvidia-drm.modeset=1"
@@ -26,9 +26,8 @@
   ];
 
   # Modern graphics configuration
-  hardware.graphics = {
+  hardware.opengl = {
     enable = true;
-    enable32Bit = true;  # For 32-bit applications
   };
 
   # Performance environment variables

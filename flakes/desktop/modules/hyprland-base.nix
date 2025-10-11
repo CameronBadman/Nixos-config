@@ -1,101 +1,17 @@
-# flakes/desktop/modules/hyprland-base.nix
+# flakes/desktop/modules/hyprland-base.nix (UPDATED)
 { config, lib, pkgs, ... }: {
-  # Enable Hyprland
-  programs.hyprland = {
+  wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
-  };
-  
-  # Essential Wayland services
-  services.dbus.enable = true;
-  programs.dconf.enable = true;
-  
-  # Security for Wayland
-  security.polkit.enable = true;
-  security.rtkit.enable = true;
-  
-  # Auto-start polkit authentication agent
-  systemd.user.services.polkit-gnome-authentication-agent-1 = {
-    description = "polkit-gnome-authentication-agent-1";
-    wantedBy = [ "graphical-session.target" ];
-    wants = [ "graphical-session.target" ];
-    after = [ "graphical-session.target" ];
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-      Restart = "on-failure";
-      RestartSec = 1;
-      TimeoutStopSec = 10;
-    };
-  };
-  
-  # Display manager for Hyprland
-  services.greetd = {
-    enable = true;
+    systemd.enable = true;
+    
     settings = {
-      default_session = {
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd Hyprland";
-        user = "greeter";
-      };
+      # Basic settings that will be overridden by other modules
+      # This ensures Hyprland starts properly
     };
   };
   
-  # XDG Portals for Hyprland
-  services.dbus.packages = with pkgs; [
-    xdg-desktop-portal
-    xdg-desktop-portal-gtk
-    xdg-desktop-portal-hyprland
-  ];
-  
-  xdg.portal = {
-    enable = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-hyprland
-      xdg-desktop-portal-gtk
-    ];
-    config = {
-      common = {
-        default = ["hyprland"];
-        "org.freedesktop.impl.portal.FileChooser" = ["gtk"];
-      };
-    };
-  };
-  
-  # Hyprland essentials
-  environment.systemPackages = with pkgs; [
-    polkit_gnome
+  home.packages = with pkgs; [
     wl-clipboard
-    vanilla-dmz
-    numix-cursor-theme
   ];
-  
-  # Create a systemd service to set up the Hyprland config in the right location
-  systemd.user.services.setup-hyprland-config = {
-    description = "Setup Hyprland configuration";
-    wantedBy = [ "default.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      # Create config directory
-      mkdir -p $HOME/.config/hypr
-      
-      # Create main config that sources from /etc
-      cat > $HOME/.config/hypr/hyprland.conf << 'EOF'
-# Main Hyprland configuration file
-# This file sources all modular configuration files
-
-# Source all configuration modules
-source = /etc/hypr/conf.d/graphical-settings.conf
-source = /etc/hypr/conf.d/keybinds.conf
-source = /etc/hypr/conf.d/workspaces.conf
-source = /etc/hypr/conf.d/window-rules.conf
-source = /etc/hypr/conf.d/waybar.conf
-source = /etc/hypr/conf.d/dunst.conf
-source = /etc/hypr/conf.d/swww.conf
-
-EOF
-    '';
-  };
 }

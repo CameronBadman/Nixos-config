@@ -1,4 +1,4 @@
-# flakes/desktop/default.nix - Main desktop flake
+# flakes/desktop/flake.nix
 {
   description = "Modular Hyprland configuration flake";
   
@@ -7,8 +7,7 @@
   };
   
   outputs = { self, nixpkgs }: {
-    nixosModules.default = { config, lib, pkgs, ... }: {
-      # Import all the modular components
+    homeManagerModules.default = { config, lib, pkgs, ... }: {
       imports = [
         ./modules/hyprland-base.nix
         ./modules/graphical-settings.nix
@@ -18,6 +17,12 @@
         ./modules/waybar.nix
         ./modules/dunst.nix
         ./modules/swww.nix
+      ];
+    };
+    
+    nixosModules.default = { config, lib, pkgs, ... }: {
+      imports = [
+        ./modules/system.nix
       ];
     };
   };
