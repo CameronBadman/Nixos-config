@@ -13,7 +13,9 @@
     htop
     neofetch
     lm_sensors
-    awscli2
+    (pkgs.awscli2.overridePythonAttrs (old: {
+      doCheck = false;
+    }))
     # File utilities
     tree
     fd
@@ -73,7 +75,7 @@
     grim # Screenshots
     slurp # Screen selection
     # File managers
-    gnome.nautilus # GUI file manager
+    nautilus # GUI file manager
     # Network manager
     networkmanagerapplet
     # Notifications
@@ -88,7 +90,9 @@
   ];
 
   fonts.packages = with pkgs; [
-   (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" "JetBrainsMono" ]; })
+    nerd-fonts.fira-code
+    nerd-fonts.droid-sans-mono
+    nerd-fonts.jetbrains-mono
   ];
 
   virtualisation.docker.enable = true;

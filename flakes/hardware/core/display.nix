@@ -25,10 +25,7 @@
     "amdgpu" "nvidia" "nvidia-drm" "nvidia-modeset"
   ];
 
-  # Modern graphics configuration
-  hardware.opengl = {
-    enable = true;
-  };
+  hardware.graphics.enable = true;
 
   # Performance environment variables
   environment.variables = {

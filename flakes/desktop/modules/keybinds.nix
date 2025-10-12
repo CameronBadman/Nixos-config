@@ -57,13 +57,4 @@
       "$mainMod, mouse:273, resizewindow"
     ];
   };
-  
-  home.packages = with pkgs; [
-    kitty
-    gnome.nautilus
-    grim
-    slurp
-    wl-clipboard
-    brightnessctl
-  ];
 }

@@ -1,52 +1,48 @@
 { config, pkgs, ... }:
-
 {
-  # Boot
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-
-  # Networking
+  
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
-
-  # Time zone and locale
+  
   time.timeZone = "Australia/Brisbane";
   i18n.defaultLocale = "en_AU.UTF-8";
-
-  # Console keymap
+  
   console.keyMap = "us";
-
-  # Enable flakes and allow unfree
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  
+  nix.settings = {
+    experimental-features = [ "nix-command" "flakes" ];
+    substituters = [
+      "https://cache.nixos.org"
+    ];
+    trusted-public-keys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+    ];
+  };
+  
   nixpkgs.config.allowUnfree = true;
-
-  # Essential system packages only
+  
   environment.systemPackages = with pkgs; [
-  # Browsers
-  firefox
-  google-chrome
+    firefox
+    google-chrome
+    nautilus
+    kitty
+    grim
+    slurp
+    dunst
+    libnotify
+    rofi
+    waybar
+    hyprpaper
+    networkmanagerapplet
+    brightnessctl
+    neofetch
+    htop
+    usbutils
+    pciutils
+    lshw
+  ];
   
-  # File manager
-  nautilus
-  
-  # Terminal
-  kitty
-  
-  # Desktop utilities
-  grim
-  slurp
-  dunst
-  libnotify
-  rofi
-  waybar
-  hyprpaper
-  networkmanagerapplet
-  brightnessctl
-  neofetch
-  htop
-  usbutils
-  pciutils
-  lshw
-];  # System version
   system.stateVersion = "24.05";
 }

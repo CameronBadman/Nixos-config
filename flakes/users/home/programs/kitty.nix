@@ -1,5 +1,6 @@
 # home/programs/kitty.nix - Kitty terminal configuration
-{ config, lib, pkts, ... }: {
+
+{ config, lib, pkgs, ... }: {
   programs.kitty = {
     enable = true;
     
